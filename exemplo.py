@@ -1,83 +1,68 @@
+from posixpath import split
 import re
 import sys
 
 fWrite = open("ex.csv","w")
 f = open("emd1.csv","r")
 g = f.readline()
-h = ""
-i = 0
-primeiro = 0
-segundo = 0
 
+flag = True
 header = r"([\w ]+)((\{\d+\}|\{\d+,\d+\})(::\w+)?)?"
 is_valid = r"^((" + header + ")?,)+$"
 
 res = re.match(is_valid, g)
 lista = re.findall(header, g)
 
-if(re.search(r',.*\{.+\},',g)): #caso existam arrays para trabalhar
-    lista[len(lista)-1][0][:-1] #tira o \n do ultimo elemento
-    campos2 = lista[:-1]
-    for linha2 in lista:
-        i = 0
+contador = 0
+contadorCabeca = 0
+contadorElemArray = 0
 
-        if(linha2[2] == ''): #caso a informação não tenha {}
-            h = h + "(?:(?P<" + linha2[0] + ">.*),)"
+fWrite.write("[\n")
+for linha in f:
+    linhaSplit = linha.split(",")
+    fWrite.write("  {\n")
 
-        elif(p := re.search("(?:\{(.+),(.+)\})",linha2[2])): #caso existam dois valores dentro de {}
-           primeiro = int(p[1])
-           segundo = int(p[2])
-           while(i < segundo-1):
-                h = h + "(?:(?P<"+linha2[0]+str(i)+">.*),)"  
-                i = i+1
-           h = h + "(?:(?P<"+linha2[0]+str(i)+">.*))" 
-
-        elif(p := re.search("(?:\{(.+)\})",linha2[2])): #caso exista um valor dentro de {}
-           primeiro = p[1]
-           while(i< primeiro-1):
-                h = h + "(?:(?P<"+linha2[0]+str(i)+">.+),)"
-                i = i+1
-           h = h + "(?:(?P<"+linha2[0]+str(i)+">.+))"
-
-    for linha in f:   
-        maluno = re.search(h,linha)
+    while(contadorCabeca< len(lista)):
         
-        if not maluno:
-            print("Erro na criação de dicionário")
-
-        else:
-            dic = maluno.groupdict()
-            print(dic) 
-
-
-
-elif(re.search(r',.*\{.+\}.+,',g)): #caso existam arrays com funções de agregação
-    print("2")
-
-else: #caso normal quando não existe arrays    
-    campos2 = lista[:-1]
-    lista[len(lista)-1][0][:-1] #tira o \n do ultimo elemento
-    for linha2 in campos2:
-        h = h + "(?:(?P<" + linha2[0] + ">.*),)"
-    h = h + "(?:(?P<" + lista[len(lista)-1][0] + ">.*))" 
-    
-    fWrite.write("[\n") 
-    for linha in f:   
-        maluno = re.search(h,linha)
-        
-        if not maluno:
-            print("Erro na criação de dicionário")
-
-        else:
-            dic = maluno.groupdict()
-            fWrite.write("    {\n   ")
-            
-            
-            for cam in lista[:-1]: # escreve toda a informação entre aspas
-                fWrite.write("  \"" + cam[0] + "\" : \""+ dic.get(cam[0]) +"\"\n    ")
+        if (intervaloVal := re.search(r'(?:\{(.+),(.+)\})',lista[contadorCabeca][2])): #caso seja um array com intervalo de valores
+            contadorElemArray = int(intervaloVal.groups()[1]) + contador #valor onde termina a escrita dos valores do array
+            contador = contador + int(intervaloVal.groups()[0]) -1 #por exemplo se o array for {3,5} isto faz o contador avançar 3 posições para começar a escrever
+            fWrite.write("     \""+lista[contadorCabeca][0]+"\" : [")
+            while contadorElemArray > contador: #este while desenha o array de elementos dentro de []
                 
-            fWrite.write("},\n")   
-
-    fWrite.write("]")           
+                if(contadorElemArray-1 == contador or (flag:=linhaSplit[contador+1]== "")): #caso seja o ultimo elemento tira o \n e escreve ] em vez de , 
+                    linhaSplit[contador] = linhaSplit[contador].strip('\n')
+                    fWrite.write(linhaSplit[contador]+"]\n")
+                    if flag: #caso existam arrays por exemplo 3,3,2,, e os valores são {3,5} mal ele enconte um espaço vazio ele faz logo ] e passa para o próximo elemento
+                        contador = contadorElemArray-1
+                
+                else: #caso seja um elemento no meio do array dá print do valor com , à frente
+                    fWrite.write(linhaSplit[contador]+",")    
+                contador = contador + 1
+            contadorCabeca = contadorCabeca + 1
         
-            
+        elif (intervaloVal := re.search(r'(?:\{(.+)\})',lista[contadorCabeca][2])):    #caso seja um array normal
+            contadorElemArray = int(intervaloVal.groups()[0]) + contador
+            fWrite.write("     \""+lista[contadorCabeca][0]+"\" : [")
+
+            while contadorElemArray > contador: #?
+                if(contadorElemArray-1 == contador or (flag:=linhaSplit[contador+1]== "")):
+                    linhaSplit[contador] = linhaSplit[contador].strip('\n')
+                    fWrite.write(linhaSplit[contador]+"]\n")
+                    if flag: #caso existam arrays por exemplo 3,3,2,, e os valores são {3,5} mal ele enconte um espaço vazio ele faz logo ] e passa para o próximo elemento
+                        contador = contadorElemArray-1
+
+                else:
+                    fWrite.write(linhaSplit[contador]+",")      
+                contador = contador + 1
+ 
+            contadorCabeca = contadorCabeca + 1
+        
+        else:
+            fWrite.write("     \""+lista[contadorCabeca][0]+"\" : \"" + linhaSplit[contador].strip('\n')+"\",\n")
+            contador = contador +1
+            contadorCabeca = contadorCabeca + 1
+    contador = 0
+    contadorCabeca = 0
+    fWrite.write("  },\n")      
+fWrite.write("]")
