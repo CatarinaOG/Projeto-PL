@@ -1,68 +1,108 @@
-from posixpath import split
 import re
-import sys
 
 fWrite = open("ex.csv","w")
-f = open("emd1.csv","r")
-g = f.readline()
+fRead = open("emd1.csv","r")
+firstLine = fRead.readline()
 
-flag = True
-header = r"([\w ]+)((\{\d+\}|\{\d+,\d+\})(::\w+)?)?"
-is_valid = r"^((" + header + ")?,)+$"
+emptyValue = True
+campo = r"([\w ]+)((\{\d+\}|\{\d+,\d+\})(::\w+)?)?"
+is_valid = r"^((" + campo + ")?,)+$"
 
-res = re.match(is_valid, g)
-lista = re.findall(header, g)
+validInfo = re.match(is_valid, firstLine)
+lista = re.findall(campo, firstLine)
 
-contador = 0
-contadorCabeca = 0
-contadorElemArray = 0
+intervaloIndex = 0
+indiceCampo = 0
+intervaloFim = 0
+soma = 0
+secondLine = True
 
-fWrite.write("[\n")
-for linha in f:
-    linhaSplit = linha.split(",")
-    fWrite.write("  {\n")
+def sumArray(arr : list[str]) -> int:
+    count = 0
+    for v in arr:
+        count += int(v)
+    return count
 
-    while(contadorCabeca< len(lista)):
-        
-        if (intervaloVal := re.search(r'(?:\{(.+),(.+)\})',lista[contadorCabeca][2])): #caso seja um array com intervalo de valores
-            contadorElemArray = int(intervaloVal.groups()[1]) + contador #valor onde termina a escrita dos valores do array
-            contador = contador + int(intervaloVal.groups()[0]) -1 #por exemplo se o array for {3,5} isto faz o contador avançar 3 posições para começar a escrever
-            fWrite.write("     \""+lista[contadorCabeca][0]+"\" : [")
-            while contadorElemArray > contador: #este while desenha o array de elementos dentro de []
-                
-                if(contadorElemArray-1 == contador or (flag:=linhaSplit[contador+1]== "")): #caso seja o ultimo elemento tira o \n e escreve ] em vez de , 
-                    linhaSplit[contador] = linhaSplit[contador].strip('\n')
-                    fWrite.write(linhaSplit[contador]+"]\n")
-                    if flag: #caso existam arrays por exemplo 3,3,2,, e os valores são {3,5} mal ele enconte um espaço vazio ele faz logo ] e passa para o próximo elemento
-                        contador = contadorElemArray-1
-                
-                else: #caso seja um elemento no meio do array dá print do valor com , à frente
-                    fWrite.write(linhaSplit[contador]+",")    
-                contador = contador + 1
-            contadorCabeca = contadorCabeca + 1
-        
-        elif (intervaloVal := re.search(r'(?:\{(.+)\})',lista[contadorCabeca][2])):    #caso seja um array normal
-            contadorElemArray = int(intervaloVal.groups()[0]) + contador
-            fWrite.write("     \""+lista[contadorCabeca][0]+"\" : [")
-
-            while contadorElemArray > contador: #?
-                if(contadorElemArray-1 == contador or (flag:=linhaSplit[contador+1]== "")):
-                    linhaSplit[contador] = linhaSplit[contador].strip('\n')
-                    fWrite.write(linhaSplit[contador]+"]\n")
-                    if flag: #caso existam arrays por exemplo 3,3,2,, e os valores são {3,5} mal ele enconte um espaço vazio ele faz logo ] e passa para o próximo elemento
-                        contador = contadorElemArray-1
-
-                else:
-                    fWrite.write(linhaSplit[contador]+",")      
-                contador = contador + 1
- 
-            contadorCabeca = contadorCabeca + 1
-        
+fWrite.write("[")
+if validInfo:
+    for linha in fRead:
+        linhaSplit = linha.split(",")
+        if secondLine:
+            fWrite.write("\n  {\n")
         else:
-            fWrite.write("     \""+lista[contadorCabeca][0]+"\" : \"" + linhaSplit[contador].strip('\n')+"\",\n")
-            contador = contador +1
-            contadorCabeca = contadorCabeca + 1
-    contador = 0
-    contadorCabeca = 0
-    fWrite.write("  },\n")      
-fWrite.write("]")
+            fWrite.write(",\n  {\n")   
+    
+        while(indiceCampo < len(lista)):
+            valores = []
+            
+            if (intervaloVal := re.search(r'(?:\{(\d+),(\d+)\})',lista[indiceCampo][2])):                 #caso seja um array com intervalo de valores
+    
+                intervaloFim = int(intervaloVal.groups()[1]) + intervaloIndex                           #valor onde termina a escrita dos valores do array
+                       #por exemplo se o array for {3,5} isto faz o intervaloIndex avançar 3 posições para começar a escrever
+                while intervaloFim > intervaloIndex:
+    
+                    if linhaSplit[intervaloIndex] == "" or linhaSplit[intervaloIndex] == "\n":
+                        intervaloIndex = intervaloFim - 1
+                        
+                    elif intervaloIndex == intervaloFim-1:
+                        linhaSplit[intervaloIndex] = linhaSplit[intervaloIndex].strip('\n')
+                        valores.append(linhaSplit[intervaloIndex])
+                    
+                    else:
+                        valores.append(linhaSplit[intervaloIndex])
+                    intervaloIndex = intervaloIndex + 1
+    
+                
+                if lista[indiceCampo][3] == "::sum":
+                    soma = sumArray(valores)
+                    fWrite.write("\t\""+lista[indiceCampo][0]+"_sum\" : " + str(soma)+"\n")
+                
+                elif lista[indiceCampo][3] == "::media":
+                    soma = sumArray(valores)
+                    fWrite.write("\t\""+lista[indiceCampo][0]+"_media\" : " + str(soma/len(valores))+"\n")
+    
+                else :
+                    fWrite.write("\t\""+lista[indiceCampo][0]+"\" : "+ str(valores).replace("'","") + "\n")
+                    
+                indiceCampo = indiceCampo + 1  
+    
+            elif (intervaloVal := re.search(r'(?:\{(\d+)\})',lista[indiceCampo][2])):                    #caso seja um array normal
+                intervaloFim = int(intervaloVal.groups()[0]) + intervaloIndex                           #valor onde termina a escrita dos valores do array
+                       #por exemplo se o array for {3,5} isto faz o intervaloIndex avançar 3 posições para começar a escrever
+                while intervaloFim > intervaloIndex:
+    
+                    if intervaloIndex == intervaloFim-1:
+                        linhaSplit[intervaloIndex] = linhaSplit[intervaloIndex].strip('\n')
+                        valores.append(linhaSplit[intervaloIndex])
+                    
+                    else:
+                        valores.append(linhaSplit[intervaloIndex])
+                    intervaloIndex = intervaloIndex + 1
+    
+                if lista[indiceCampo][3] == "::sum":
+                    soma = sumArray(valores)
+                    fWrite.write("\t\""+lista[indiceCampo][0]+"_sum\" : " + str(soma)+"\n")
+                
+                elif lista[indiceCampo][3] == "::media":
+                    soma = sumArray(valores)
+                    fWrite.write("\t\""+lista[indiceCampo][0]+"_media\" : " + str(soma/len(valores))+"\n")
+    
+                else :
+                    fWrite.write("\t\""+lista[indiceCampo][0]+"\" : "+ str(valores).replace("'","") + "\n")
+                    
+                indiceCampo = indiceCampo + 1   
+    
+            
+            else:
+                fWrite.write("\t\""+lista[indiceCampo][0]+"\" : \"" + linhaSplit[intervaloIndex].strip('\n')+"\",\n")
+                intervaloIndex = intervaloIndex +1
+                indiceCampo = indiceCampo + 1
+            
+    
+        intervaloIndex = 0
+        indiceCampo = 0
+        fWrite.write("  }")
+        secondLine = False
+    fWrite.write("\n]")
+else:
+    print("Erro na informacao do ficheiro")
