@@ -1,7 +1,7 @@
 import re
 
-fWrite = open("ex.csv","w")
-fRead = open("emd1.csv","r")
+fWrite = open("ex1.csv","w")
+fRead = open("emd.csv","r")
 firstLine = fRead.readline()
 
 emptyValue = True
@@ -11,7 +11,7 @@ is_valid = r"^((" + campo + ")?,)+$"
 validInfo = re.match(is_valid, firstLine)
 lista = re.findall(campo, firstLine)
 
-#linhaSep = r"(([\w\s\dáàâãéèêíóôõúçÁÀÂÃÉÈÍÓÔÕÚÇ])+|\"([\w,\s\dáàâãéèêíóôõúçÁÀÂÃÉÈÍÓÔÕÚÇ])+\")"
+linhaSep = r"(?:(\".*?\"|.*?)[,\n])"
 intervaloIndex = 0
 indiceCampo = 0
 intervaloFim = 0
@@ -27,8 +27,7 @@ def sumArray(arr : list[str]) -> int:
 fWrite.write("[")
 if validInfo:
     for linha in fRead:
-        linhaSplit = linha.split(",")
-        print(linhaSplit)
+        linhaSplit = re.findall(linhaSep,linha)
         if secondLine:
             fWrite.write("\n  {\n")
         else:
@@ -43,11 +42,13 @@ if validInfo:
                        #por exemplo se o array for {3,5} isto faz o intervaloIndex avançar 3 posições para começar a escrever
                 while intervaloFim > intervaloIndex:
     
-                    if linhaSplit[intervaloIndex] == "" or linhaSplit[intervaloIndex] == "\n":
+                    if intervaloIndex >= len(linhaSplit):
                         intervaloIndex = intervaloFim - 1
+
+                    elif linhaSplit[intervaloIndex] == "":   
+                        intervaloIndex = intervaloFim - 1 
                         
                     elif intervaloIndex == intervaloFim-1:
-                        linhaSplit[intervaloIndex] = linhaSplit[intervaloIndex].strip('\n')
                         valores.append(linhaSplit[intervaloIndex])
                     
                     else:
@@ -72,13 +73,19 @@ if validInfo:
                 intervaloFim = int(intervaloVal.groups()[0]) + intervaloIndex                           #valor onde termina a escrita dos valores do array
                        #por exemplo se o array for {3,5} isto faz o intervaloIndex avançar 3 posições para começar a escrever
                 while intervaloFim > intervaloIndex:
-    
-                    if intervaloIndex == intervaloFim-1:
-                        linhaSplit[intervaloIndex] = linhaSplit[intervaloIndex].strip('\n')
+                    
+                    if intervaloIndex >= len(linhaSplit):
+                        intervaloIndex = intervaloFim - 1
+
+                    elif linhaSplit[intervaloIndex] == "":   
+                        intervaloIndex = intervaloFim - 1 
+
+                    elif intervaloIndex == intervaloFim-1:
                         valores.append(linhaSplit[intervaloIndex])
                     
                     else:
                         valores.append(linhaSplit[intervaloIndex])
+                    
                     intervaloIndex = intervaloIndex + 1
     
                 if lista[indiceCampo][3] == "::sum":
