@@ -5,12 +5,13 @@ fRead = open("emd1.csv","r")
 firstLine = fRead.readline()
 
 emptyValue = True
-campo = r"([\w ]+)((\{\d+\}|\{\d+,\d+\})(::\w+)?)?"
+campo = r"([\w]+|\"[\w,]+\")((\{\d+\}|\{\d+,\d+\})(::\w+)?)?"
 is_valid = r"^((" + campo + ")?,)+$"
 
 validInfo = re.match(is_valid, firstLine)
 lista = re.findall(campo, firstLine)
 
+#linhaSep = r"(([\w\s\dáàâãéèêíóôõúçÁÀÂÃÉÈÍÓÔÕÚÇ])+|\"([\w,\s\dáàâãéèêíóôõúçÁÀÂÃÉÈÍÓÔÕÚÇ])+\")"
 intervaloIndex = 0
 indiceCampo = 0
 intervaloFim = 0
@@ -27,6 +28,7 @@ fWrite.write("[")
 if validInfo:
     for linha in fRead:
         linhaSplit = linha.split(",")
+        print(linhaSplit)
         if secondLine:
             fWrite.write("\n  {\n")
         else:
