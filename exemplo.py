@@ -1,22 +1,23 @@
 import re
 
-fWrite = open("ex1.csv","w")
-fRead = open("emd.csv","r")
+fWrite = open("ex.csv","w")
+fRead = open("emd1.csv","r")
 firstLine = fRead.readline()
 
 emptyValue = True
-campo = r"([\w]+|\"[\w,]+\")((\{\d+\}|\{\d+,\d+\})(::\w+)?)?"
-is_valid = r"^((" + campo + ")?,)+$"
+campo = r"([\w]+|\"[\w,]+\")((\{\d+\}|\{\d*,\d*\})(::\w+)?)?"
+is_valid = r"^(" + campo + "[,;\n])+$"
 
 validInfo = re.match(is_valid, firstLine)
 lista = re.findall(campo, firstLine)
 
-linhaSep = r"(?:(\".*?\"|.*?)[,\n])"
+linhaSep = r"(\".+?\",|\".+?\"$|.+?,|.+?$)"
 intervaloIndex = 0
 indiceCampo = 0
 intervaloFim = 0
 soma = 0
 secondLine = True
+
 
 def sumArray(arr : list[str]) -> int:
     count = 0
@@ -28,6 +29,10 @@ fWrite.write("[")
 if validInfo:
     for linha in fRead:
         linhaSplit = re.findall(linhaSep,linha)
+        
+        for i in range(len(linhaSplit)-1): # serve para retirar as , a mais no findall anterior
+            linhaSplit[i] = linhaSplit[i][:-1]
+
         if secondLine:
             fWrite.write("\n  {\n")
         else:
@@ -36,7 +41,7 @@ if validInfo:
         while(indiceCampo < len(lista)):
             valores = []
             
-            if (intervaloVal := re.search(r'(?:\{(\d+),(\d+)\})',lista[indiceCampo][2])):                 #caso seja um array com intervalo de valores
+            if (intervaloVal := re.search(r'(?:\{(\d*),(\d*)\})',lista[indiceCampo][2])):                 #caso seja um array com intervalo de valores
     
                 intervaloFim = int(intervaloVal.groups()[1]) + intervaloIndex                           #valor onde termina a escrita dos valores do array
                        #por exemplo se o array for {3,5} isto faz o intervaloIndex avançar 3 posições para começar a escrever
@@ -103,8 +108,8 @@ if validInfo:
     
             
             else:
-                fWrite.write("\t\""+lista[indiceCampo][0]+"\" : \"" + linhaSplit[intervaloIndex].strip('\n')+"\",\n")
-                intervaloIndex = intervaloIndex +1
+                fWrite.write("\t\""+lista[indiceCampo][0]+"\" : \"" + linhaSplit[intervaloIndex]+"\",\n")
+                intervaloIndex = intervaloIndex + 1
                 indiceCampo = indiceCampo + 1
             
     
