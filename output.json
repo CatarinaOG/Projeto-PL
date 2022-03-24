@@ -1,0 +1,20 @@
+[
+  {
+	"Número" : "3162",
+	"Nome" : "Cândido Faísca",
+	"Curso" : "Teatro",
+	"nota" : [s, b, s]
+  },
+  {
+	"Número" : "7777",
+	"Nome" : "Cristiano Ronaldo",
+	"Curso" : "Desporto",
+	"nota" : [4, 2, 1]
+  },
+  {
+	"Número" : "264",
+	"Nome" : "Marcelo Sousa",
+	"Curso" : "Ciência Política",
+	"nota" : [5, 4, 2]
+  }
+]
