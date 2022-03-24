@@ -5,19 +5,22 @@ fRead = open("emd1.csv","r")
 firstLine = fRead.readline()
 
 emptyValue = True
-campo = r"([\w]+|\"[\w,]+\")((\{\d+\}|\{\d*,\d*\})(::\w+)?)?"
-is_valid = r"^(" + campo + "[,;\n])+$"
+campo = r"([\w\d]+|\"[\d\w,]+\")((\{\d+\}|\{\d*,\d*\})(::\w+)?)?"
+is_valid = r"^((" + campo + ")?[,;\n])+$"
 
 validInfo = re.match(is_valid, firstLine)
 lista = re.findall(campo, firstLine)
 
-linhaSep = r"(\".+?\",|\".+?\"$|.+?,|.+?$)"
+linhaSep = r"(\".+?\",|\".+?\"$|.*?,|.+?$)"
 intervaloIndex = 0
 indiceCampo = 0
 intervaloFim = 0
 soma = 0
 secondLine = True
 
+
+concatenate = ""
+i=0
 
 def sumArray(arr : list[str]) -> int:
     count = 0
@@ -28,11 +31,23 @@ def sumArray(arr : list[str]) -> int:
 fWrite.write("[")
 if validInfo:
     for linha in fRead:
-        linhaSplit = re.findall(linhaSep,linha)
-        
-        for i in range(len(linhaSplit)-1): # serve para retirar as , a mais no findall anterior
-            linhaSplit[i] = linhaSplit[i][:-1]
-
+        linhaSplit = re.split(',', linha)
+        posIN = []
+        while i < (len(linhaSplit)):
+            if re.search(r'\".*\"',linhaSplit[i]):
+                posIN.append(linhaSplit[i])
+            elif re.search(r'^\"',linhaSplit[i]):
+                while linhaSplit[i][-1] != "\"":
+                    concatenate = concatenate + linhaSplit[i]+ ","
+                    i+=1
+                concatenate = concatenate + linhaSplit[i]
+                posIN.append(concatenate)
+                concatenate = ""   
+            else:
+                posIN.append(linhaSplit[i])
+            i+=1
+        i=0    
+        print(posIN)
         if secondLine:
             fWrite.write("\n  {\n")
         else:
@@ -47,17 +62,17 @@ if validInfo:
                        #por exemplo se o array for {3,5} isto faz o intervaloIndex avançar 3 posições para começar a escrever
                 while intervaloFim > intervaloIndex:
     
-                    if intervaloIndex >= len(linhaSplit):
+                    if intervaloIndex >= len(posIN):
                         intervaloIndex = intervaloFim - 1
 
-                    elif linhaSplit[intervaloIndex] == "":   
+                    elif posIN[intervaloIndex] == "":   
                         intervaloIndex = intervaloFim - 1 
                         
                     elif intervaloIndex == intervaloFim-1:
-                        valores.append(linhaSplit[intervaloIndex])
+                        valores.append(posIN[intervaloIndex])
                     
                     else:
-                        valores.append(linhaSplit[intervaloIndex])
+                        valores.append(posIN[intervaloIndex])
                     intervaloIndex = intervaloIndex + 1
     
                 
@@ -70,7 +85,7 @@ if validInfo:
                     fWrite.write("\t\""+lista[indiceCampo][0]+"_media\" : " + str(soma/len(valores))+"\n")
     
                 else :
-                    fWrite.write("\t\""+lista[indiceCampo][0]+"\" : "+ str(valores).replace("'","") + "\n")
+                    fWrite.write("\t\""+lista[indiceCampo][0]+"\" : "+ str(valores).replace("'","").replace("\\n","") + "\n")
                     
                 indiceCampo = indiceCampo + 1  
     
@@ -79,17 +94,19 @@ if validInfo:
                        #por exemplo se o array for {3,5} isto faz o intervaloIndex avançar 3 posições para começar a escrever
                 while intervaloFim > intervaloIndex:
                     
-                    if intervaloIndex >= len(linhaSplit):
+                    if intervaloIndex >= len(posIN):
                         intervaloIndex = intervaloFim - 1
-
-                    elif linhaSplit[intervaloIndex] == "":   
+                    
+                    elif posIN[intervaloIndex] == "":   
                         intervaloIndex = intervaloFim - 1 
 
+
                     elif intervaloIndex == intervaloFim-1:
-                        valores.append(linhaSplit[intervaloIndex])
+                        valores.append(posIN[intervaloIndex])
+
                     
                     else:
-                        valores.append(linhaSplit[intervaloIndex])
+                        valores.append(posIN[intervaloIndex])
                     
                     intervaloIndex = intervaloIndex + 1
     
@@ -102,13 +119,14 @@ if validInfo:
                     fWrite.write("\t\""+lista[indiceCampo][0]+"_media\" : " + str(soma/len(valores))+"\n")
     
                 else :
-                    fWrite.write("\t\""+lista[indiceCampo][0]+"\" : "+ str(valores).replace("'","") + "\n")
+                    fWrite.write("\t\""+lista[indiceCampo][0]+"\" : "+ str(valores).replace("'","").replace("\\n","") + "\n")
                     
                 indiceCampo = indiceCampo + 1   
     
             
             else:
-                fWrite.write("\t\""+lista[indiceCampo][0]+"\" : \"" + linhaSplit[intervaloIndex]+"\",\n")
+                posIN[intervaloIndex] = posIN[intervaloIndex].strip("\n")
+                fWrite.write("\t\""+lista[indiceCampo][0]+"\" : \"" + posIN[intervaloIndex]+"\",\n")
                 intervaloIndex = intervaloIndex + 1
                 indiceCampo = indiceCampo + 1
             
