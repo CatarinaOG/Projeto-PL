@@ -56,6 +56,11 @@ def limpaLinha(linhaSplit):
 
     return listaLimpa 
 
+def cleanValores(valores):
+    cleaned = []
+    for valor in valores:
+        cleaned.append(str(valor).replace("'",""))
+    return cleaned
 
 fWrite.write("[")   
 if validInfo:                                                                                                   # se o cabeçalho é válido avança
@@ -103,6 +108,11 @@ if validInfo:                                                                   
                 elif listaCabecalho[indCabecalho][3] == "::media":                                                                  # se for uma função de media 
                     soma = sumArray(valores)                                                                                        # soma todos os valores guardados
                     fWrite.write("\t\""+listaCabecalho[indCabecalho][0]+"_media\" : " + str(soma/len(valores)))                     # coloca no JSON com o prefixo_media
+
+                elif listaCabecalho[indCabecalho][3] == "::sort":                                                                   
+                    cleaned = cleanValores(listaTotal)
+                    cleaned.sort()                                                                                       
+                    fWrite.write("\t\""+listaCabecalho[indCabecalho][0]+"_sort\" : " + str(cleaned).replace("\'",""))                     
 
                 else :
                     fWrite.write("\t\""+listaCabecalho[indCabecalho][0]+"\" : "+ str(listaTotal).replace("'","").replace("\\n","")) # se for apenas para apresentar os números vai retirar primeiro os ' e o \n se existir

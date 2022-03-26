@@ -3,18 +3,18 @@
 	"Número" : "3162",
 	"Nome" : "Cândido Faísca",
 	"Curso" : "Teatro",
-	"sitios" : ["lisboa", "martim", "cabreiros"]
+	"sitios_sort" : ["a", "hello", 2]
   },
   {
 	"Número" : "7777",
 	"Nome" : "Cristiano Ronaldo",
 	"Curso" : "Desporto",
-	"sitios" : ["df", "martim", "cabreiros"]
+	"sitios_sort" : [2, 2, 3]
   },
   {
 	"Número" : "264",
 	"Nome" : "Marcelo Sousa",
 	"Curso" : "Ciência Política",
-	"sitios" : ["try", "thgis", "shit"]
+	"sitios_sort" : [2, 3, 3]
   }
 ]

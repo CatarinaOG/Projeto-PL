@@ -1,4 +1,4 @@
-Número,Nome,Curso,sitios{3,4},,,,
-3162,Cândido Faísca,Teatro,2,3,2,
+Número,Nome,Curso,sitios{3,4}::sort,,,,
+3162,Cândido Faísca,Teatro,2,a,hello,
 7777,Cristiano Ronaldo,Desporto,3,2,2,
 264,Marcelo Sousa,Ciência Política,2,3,3,
