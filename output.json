@@ -3,13 +3,13 @@
 	"Número" : "3162",
 	"Nome" : "Cândido Faísca",
 	"Curso" : "Teatro",
-	"sitios_sort" : ["a", "hello", 2]
+	"sitios_sort" : [2, "a", "hello"]
   },
   {
 	"Número" : "7777",
 	"Nome" : "Cristiano Ronaldo",
 	"Curso" : "Desporto",
-	"sitios_sort" : [2, 2, 3]
+	"sitios_sort" : [3, 2, 2]
   },
   {
 	"Número" : "264",

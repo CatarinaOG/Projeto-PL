@@ -62,6 +62,9 @@ def cleanValores(valores):
         cleaned.append(str(valor).replace("'",""))
     return cleaned
 
+def myLength(e):
+    return len(e)
+
 fWrite.write("[")   
 if validInfo:                                                                                                   # se o cabeçalho é válido avança
     for linha in fRead:                                                                                         # ciclo para cada uma das linhas de conteudo
@@ -112,7 +115,12 @@ if validInfo:                                                                   
                 elif listaCabecalho[indCabecalho][3] == "::sort":                                                                   
                     cleaned = cleanValores(listaTotal)
                     cleaned.sort()                                                                                       
-                    fWrite.write("\t\""+listaCabecalho[indCabecalho][0]+"_sort\" : " + str(cleaned).replace("\'",""))                     
+                    fWrite.write("\t\""+listaCabecalho[indCabecalho][0]+"_sort\" : " + str(cleaned).replace("\'",""))
+                
+                elif listaCabecalho[indCabecalho][3] == "::sortByLength":                                                                 
+                    cleaned = cleanValores(listaTotal)
+                    cleaned.sort(key=myLength)                                                                                       
+                    fWrite.write("\t\""+listaCabecalho[indCabecalho][0]+"_sort\" : " + str(cleaned).replace("\'",""))
 
                 else :
                     fWrite.write("\t\""+listaCabecalho[indCabecalho][0]+"\" : "+ str(listaTotal).replace("'","").replace("\\n","")) # se for apenas para apresentar os números vai retirar primeiro os ' e o \n se existir
