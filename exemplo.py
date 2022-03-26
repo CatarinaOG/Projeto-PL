@@ -5,11 +5,12 @@ fRead = open("input.csv","r")                                                   
 firstLine = fRead.readline()                                                                                    # recolhe a primeira linha
 
 campo = r"([\w]+|\"[\w,;]+\")((\{\d+\}|\{\d*,\d+\})(::\w+)?)?"                                                  # er para 1 campo
-cabecalho = r"^((" + campo + ")?[,;\n])+$"                                                                      # er para cabeçalho
+cabecalho = r"^((" + campo + ")?[,;|\n])+$"                                                                      # er para cabeçalho
 
 validInfo = re.match(cabecalho, firstLine)                                                                      # guarda se cabecalho é valido
 listaCabecalho = re.findall(campo, firstLine)                                                                   # guarda lista de match objects de cada campo
 sizeListComa = len(re.split(',', firstLine))                                                                    # número de campos separados por ,
+sizeListBarra = len(re.split('|', firstLine))                                                                   # número de campos separados por |
 
 indCampo = 0                                                                                                    # indice que vai percorrer os campos de informação
 indCabecalho = 0                                                                                                # indice que vai percorrer os campos cabecalho   
@@ -41,6 +42,8 @@ def limpaLinha(linhaSplit):
             while linhaSplit[i][-1] != "\"":                             # enquanto não aparecer um campo a acabar com 1 aspas o campo é adicionado à string com o delimitador correto
                 if sizeListComa == len(linhaSplit):                      # se delimitador for ,
                     concatenate = concatenate + linhaSplit[i]+ ","
+                elif sizeListBarra == len(linhaSplit):                   # se delimitador for |
+                    concatenate = concatenate + linhaSplit[i]+ "|"
                 else:                                                    # se delimitador for ;
                     concatenate = concatenate + linhaSplit[i]+ ";"
                 i+=1
@@ -57,7 +60,7 @@ def limpaLinha(linhaSplit):
 fWrite.write("[")   
 if validInfo:                                                                                                   # se o cabeçalho é válido avança
     for linha in fRead:                                                                                         # ciclo para cada uma das linhas de conteudo
-        linhaSplit = re.split('[,;]', linha)                                                                    # guardar lista de campos separados por , ou ; para ser limpa
+        linhaSplit = re.split('[,;|]', linha)                                                                    # guardar lista de campos separados por , ou ; para ser limpa
         listaLimpa = limpaLinha(linhaSplit)                                                                     # lista com correta posição de delimitadores (delimitadores dentro de strigs não contam como campo)
         
         if secondLine:                                                                                          # adiciona formato do JSON inicial
@@ -67,7 +70,9 @@ if validInfo:                                                                   
     
         while(indCabecalho < len(listaCabecalho)):                                                              # enquanto os campos não acabarem
             valores = []                                                                                        # guarda os valores das listas
-            
+            strings = []                                                                                        # guarda as strings das listas
+            listaTotal = []
+
             if intervaloVal := re.search(r'(?:\{(\d*),(\d+)\})|(?:\{(\d+)\})',listaCabecalho[indCabecalho][2]):     # se encontrar algum intervalo
             
                 if (intervaloVal := re.search(r'(?:\{(\d*),(\d+)\})',listaCabecalho[indCabecalho][2])):             # se encontrar um intervalo variável
@@ -81,10 +86,15 @@ if validInfo:                                                                   
                     if indCampo >= len(listaLimpa) or (listaLimpa[indCampo] == "") or (listaLimpa[indCampo] == "\n"):     # se for o último elemento do intervalo ou da linha indice avança
                         indCampo = intervaloFim - 1                                                                       # para o último valor do intervalo
 
-                    else: valores.append(listaLimpa[indCampo])                                                            # se não for vazio, vai adicionar o valor à lista dos guardados
+                    elif re.search(r'\d+',listaLimpa[indCampo]):                                                          # se não for vazio, vai adicionar o valor à lista dos guardados
+                        valores.append(listaLimpa[indCampo])
+                        listaTotal.append(listaLimpa[indCampo])
+                    else:
+                        strings.append("\""+listaLimpa[indCampo]+"\"")
+                        listaTotal.append("\""+listaLimpa[indCampo]+"\"")    
                     
                     indCampo = indCampo + 1                                                                     
-    
+
                 
                 if listaCabecalho[indCabecalho][3] == "::sum":                                                                      # se for uma função de soma
                     soma = sumArray(valores)                                                                                        # soma todos os valores guardados
@@ -95,7 +105,7 @@ if validInfo:                                                                   
                     fWrite.write("\t\""+listaCabecalho[indCabecalho][0]+"_media\" : " + str(soma/len(valores)))                     # coloca no JSON com o prefixo_media
 
                 else :
-                    fWrite.write("\t\""+listaCabecalho[indCabecalho][0]+"\" : "+ str(valores).replace("'","").replace("\\n",""))    # se for apenas para apresentar os números vai retirar primeiro os ' e o \n se existir
+                    fWrite.write("\t\""+listaCabecalho[indCabecalho][0]+"\" : "+ str(listaTotal).replace("'","").replace("\\n","")) # se for apenas para apresentar os números vai retirar primeiro os ' e o \n se existir
                     
                 indCabecalho = indCabecalho + 1     
             
