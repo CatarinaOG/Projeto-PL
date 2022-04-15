@@ -1,0 +1,110 @@
+"""
+    L = {'%','#','{','}','=','[',']','(',')',','}
+    T = {'ignore','literals','tokens','precedence','literal','token','ignoreTokens','exp','final','string','nome','digit','op','def'}         final =  (fazer um token com o return e o error)
+    P = {
+
+    Z : LEX YACC YACCFUNCS
+
+    //------------------LEX ----------------
+
+    LEX  : LITERALS LEX
+        | IGNORE LEX
+        | TOKENS LEX
+        | EXPR LEX
+        | empty
+
+    //------------------litertals ----------------
+
+    LITERALS : literals '=' '"' LISTLITERALS '"'
+
+    LISTLITERALS : literal LISTLITERALS
+                | empty
+
+
+   //--------------------Tokens-------------------
+    TOKENS : tokens '=' '[' LISTOKENS ']'
+
+    LISTOKENS : ''' token ''' LISTATOKENS
+
+    LISTATOKENS : ',' ''' token '''
+                | empty
+
+
+    //------------------ignore ----------------
+
+    IGNORE : ignore '=' '"' LISTIGNORE '"'
+
+    LISTIGNORE : ignoreTokens LISTIGNORE
+                | empty
+
+    //------------------EXPR ----------------
+
+    EXPR : exp FUNC
+
+    FUNC : final
+        | EMPTY  (verificar se pode nao ter return nem error no fim)
+
+
+    //------------------YACC ----------------
+
+    YACC : PREC YACC
+        |  VAR YACC
+        |  GRAM YACC
+        | empty
+
+    //------------------PREC ----------------
+
+    PREC : precedence '=' '[' LISTPREC ']'
+
+    LISTPREC : '(' LISTSTRINGS ')' ','
+            | empty
+
+    LISTSTRINGS : ''' string ''' , CONT
+
+    CONT : ',' ''' string '''
+        | empty
+
+    //------------------VAR- ----------------
+
+    VAR : string '=' '{' '}'
+        | string '=' digit
+
+    //------------------GRAM ----------------
+
+    GRAM : nome ':' EXPR '{' INFO '}'
+
+    EXPR : nome op nome
+        | nome
+        | tokens
+        | '''(''' nome ''')'''
+        | '''op''' nome        (nao percebo como é que isto é feito no dicionario :/)
+
+
+    //------------------YACCFUNCS----------------
+
+    YACCFUNCS : FUNC YACCFUNCS
+            | STATEMENT
+            |
+
+
+    FUNC : def string'('string')' ':'
+
+}
+"""
+
+
+"""
+Tem de dar erros?
+Como identificar conteudo das funcoes?
+"""
+
+
+
+
+def p_LISTLITERALS(p):
+    "LISTLITERALS : literal LISTLITERALS"
+    p[0] = [p[1]] + p[2]
+
+def p_LISTLITERALS_EMPTY(p):
+    "LISTLITERALS :"
+    p[0] = []

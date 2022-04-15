@@ -1,0 +1,377 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    colon
+    func
+    quote
+
+Grammar
+
+Rule 0     S' -> Z
+Rule 1     Z -> LEX YACC
+Rule 2     LEX -> lex LEXES
+Rule 3     LEXES -> literals equal listliterals LEXES
+Rule 4     LEXES -> tokens equal oBracket LISTTOKENS cBracket LEXES
+Rule 5     LISTTOKENS -> token CONTLISTTOKENS
+Rule 6     CONTLISTTOKENS -> comma token CONTLISTTOKENS
+Rule 7     CONTLISTTOKENS -> <empty>
+Rule 8     LEXES -> ignor equal listignore LEXES
+Rule 9     LEXES -> <empty>
+Rule 10    LEX -> <empty>
+Rule 11    YACC -> yacc YACCS
+Rule 12    YACCS -> precedence equal oBracket LISTPRECE cBracket YACCS
+Rule 13    LISTPRECE -> listprecedence comma LISTPRECE
+Rule 14    LISTPRECE -> <empty>
+Rule 15    YACCS -> <empty>
+
+Terminals, with rules where they appear
+
+cBracket             : 4 12
+colon                : 
+comma                : 6 13
+equal                : 3 4 8 12
+error                : 
+func                 : 
+ignor                : 8
+lex                  : 2
+listignore           : 8
+listliterals         : 3
+listprecedence       : 13
+literals             : 3
+oBracket             : 4 12
+precedence           : 12
+quote                : 
+token                : 5 6
+tokens               : 4
+yacc                 : 11
+
+Nonterminals, with rules where they appear
+
+CONTLISTTOKENS       : 5 6
+LEX                  : 1
+LEXES                : 2 3 4 8
+LISTPRECE            : 12 13
+LISTTOKENS           : 4
+YACC                 : 1
+YACCS                : 11 12
+Z                    : 0
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . Z
+    (1) Z -> . LEX YACC
+    (2) LEX -> . lex LEXES
+    (10) LEX -> .
+
+    lex             shift and go to state 3
+    yacc            reduce using rule 10 (LEX -> .)
+
+    Z                              shift and go to state 1
+    LEX                            shift and go to state 2
+
+state 1
+
+    (0) S' -> Z .
+
+
+
+state 2
+
+    (1) Z -> LEX . YACC
+    (11) YACC -> . yacc YACCS
+
+    yacc            shift and go to state 5
+
+    YACC                           shift and go to state 4
+
+state 3
+
+    (2) LEX -> lex . LEXES
+    (3) LEXES -> . literals equal listliterals LEXES
+    (4) LEXES -> . tokens equal oBracket LISTTOKENS cBracket LEXES
+    (8) LEXES -> . ignor equal listignore LEXES
+    (9) LEXES -> .
+
+    literals        shift and go to state 7
+    tokens          shift and go to state 8
+    ignor           shift and go to state 9
+    yacc            reduce using rule 9 (LEXES -> .)
+
+    LEXES                          shift and go to state 6
+
+state 4
+
+    (1) Z -> LEX YACC .
+
+    $end            reduce using rule 1 (Z -> LEX YACC .)
+
+
+state 5
+
+    (11) YACC -> yacc . YACCS
+    (12) YACCS -> . precedence equal oBracket LISTPRECE cBracket YACCS
+    (15) YACCS -> .
+
+    precedence      shift and go to state 11
+    $end            reduce using rule 15 (YACCS -> .)
+
+    YACCS                          shift and go to state 10
+
+state 6
+
+    (2) LEX -> lex LEXES .
+
+    yacc            reduce using rule 2 (LEX -> lex LEXES .)
+
+
+state 7
+
+    (3) LEXES -> literals . equal listliterals LEXES
+
+    equal           shift and go to state 12
+
+
+state 8
+
+    (4) LEXES -> tokens . equal oBracket LISTTOKENS cBracket LEXES
+
+    equal           shift and go to state 13
+
+
+state 9
+
+    (8) LEXES -> ignor . equal listignore LEXES
+
+    equal           shift and go to state 14
+
+
+state 10
+
+    (11) YACC -> yacc YACCS .
+
+    $end            reduce using rule 11 (YACC -> yacc YACCS .)
+
+
+state 11
+
+    (12) YACCS -> precedence . equal oBracket LISTPRECE cBracket YACCS
+
+    equal           shift and go to state 15
+
+
+state 12
+
+    (3) LEXES -> literals equal . listliterals LEXES
+
+    listliterals    shift and go to state 16
+
+
+state 13
+
+    (4) LEXES -> tokens equal . oBracket LISTTOKENS cBracket LEXES
+
+    oBracket        shift and go to state 17
+
+
+state 14
+
+    (8) LEXES -> ignor equal . listignore LEXES
+
+    listignore      shift and go to state 18
+
+
+state 15
+
+    (12) YACCS -> precedence equal . oBracket LISTPRECE cBracket YACCS
+
+    oBracket        shift and go to state 19
+
+
+state 16
+
+    (3) LEXES -> literals equal listliterals . LEXES
+    (3) LEXES -> . literals equal listliterals LEXES
+    (4) LEXES -> . tokens equal oBracket LISTTOKENS cBracket LEXES
+    (8) LEXES -> . ignor equal listignore LEXES
+    (9) LEXES -> .
+
+    literals        shift and go to state 7
+    tokens          shift and go to state 8
+    ignor           shift and go to state 9
+    yacc            reduce using rule 9 (LEXES -> .)
+
+    LEXES                          shift and go to state 20
+
+state 17
+
+    (4) LEXES -> tokens equal oBracket . LISTTOKENS cBracket LEXES
+    (5) LISTTOKENS -> . token CONTLISTTOKENS
+
+    token           shift and go to state 22
+
+    LISTTOKENS                     shift and go to state 21
+
+state 18
+
+    (8) LEXES -> ignor equal listignore . LEXES
+    (3) LEXES -> . literals equal listliterals LEXES
+    (4) LEXES -> . tokens equal oBracket LISTTOKENS cBracket LEXES
+    (8) LEXES -> . ignor equal listignore LEXES
+    (9) LEXES -> .
+
+    literals        shift and go to state 7
+    tokens          shift and go to state 8
+    ignor           shift and go to state 9
+    yacc            reduce using rule 9 (LEXES -> .)
+
+    LEXES                          shift and go to state 23
+
+state 19
+
+    (12) YACCS -> precedence equal oBracket . LISTPRECE cBracket YACCS
+    (13) LISTPRECE -> . listprecedence comma LISTPRECE
+    (14) LISTPRECE -> .
+
+    listprecedence  shift and go to state 25
+    cBracket        reduce using rule 14 (LISTPRECE -> .)
+
+    LISTPRECE                      shift and go to state 24
+
+state 20
+
+    (3) LEXES -> literals equal listliterals LEXES .
+
+    yacc            reduce using rule 3 (LEXES -> literals equal listliterals LEXES .)
+
+
+state 21
+
+    (4) LEXES -> tokens equal oBracket LISTTOKENS . cBracket LEXES
+
+    cBracket        shift and go to state 26
+
+
+state 22
+
+    (5) LISTTOKENS -> token . CONTLISTTOKENS
+    (6) CONTLISTTOKENS -> . comma token CONTLISTTOKENS
+    (7) CONTLISTTOKENS -> .
+
+    comma           shift and go to state 28
+    cBracket        reduce using rule 7 (CONTLISTTOKENS -> .)
+
+    CONTLISTTOKENS                 shift and go to state 27
+
+state 23
+
+    (8) LEXES -> ignor equal listignore LEXES .
+
+    yacc            reduce using rule 8 (LEXES -> ignor equal listignore LEXES .)
+
+
+state 24
+
+    (12) YACCS -> precedence equal oBracket LISTPRECE . cBracket YACCS
+
+    cBracket        shift and go to state 29
+
+
+state 25
+
+    (13) LISTPRECE -> listprecedence . comma LISTPRECE
+
+    comma           shift and go to state 30
+
+
+state 26
+
+    (4) LEXES -> tokens equal oBracket LISTTOKENS cBracket . LEXES
+    (3) LEXES -> . literals equal listliterals LEXES
+    (4) LEXES -> . tokens equal oBracket LISTTOKENS cBracket LEXES
+    (8) LEXES -> . ignor equal listignore LEXES
+    (9) LEXES -> .
+
+    literals        shift and go to state 7
+    tokens          shift and go to state 8
+    ignor           shift and go to state 9
+    yacc            reduce using rule 9 (LEXES -> .)
+
+    LEXES                          shift and go to state 31
+
+state 27
+
+    (5) LISTTOKENS -> token CONTLISTTOKENS .
+
+    cBracket        reduce using rule 5 (LISTTOKENS -> token CONTLISTTOKENS .)
+
+
+state 28
+
+    (6) CONTLISTTOKENS -> comma . token CONTLISTTOKENS
+
+    token           shift and go to state 32
+
+
+state 29
+
+    (12) YACCS -> precedence equal oBracket LISTPRECE cBracket . YACCS
+    (12) YACCS -> . precedence equal oBracket LISTPRECE cBracket YACCS
+    (15) YACCS -> .
+
+    precedence      shift and go to state 11
+    $end            reduce using rule 15 (YACCS -> .)
+
+    YACCS                          shift and go to state 33
+
+state 30
+
+    (13) LISTPRECE -> listprecedence comma . LISTPRECE
+    (13) LISTPRECE -> . listprecedence comma LISTPRECE
+    (14) LISTPRECE -> .
+
+    listprecedence  shift and go to state 25
+    cBracket        reduce using rule 14 (LISTPRECE -> .)
+
+    LISTPRECE                      shift and go to state 34
+
+state 31
+
+    (4) LEXES -> tokens equal oBracket LISTTOKENS cBracket LEXES .
+
+    yacc            reduce using rule 4 (LEXES -> tokens equal oBracket LISTTOKENS cBracket LEXES .)
+
+
+state 32
+
+    (6) CONTLISTTOKENS -> comma token . CONTLISTTOKENS
+    (6) CONTLISTTOKENS -> . comma token CONTLISTTOKENS
+    (7) CONTLISTTOKENS -> .
+
+    comma           shift and go to state 28
+    cBracket        reduce using rule 7 (CONTLISTTOKENS -> .)
+
+    CONTLISTTOKENS                 shift and go to state 35
+
+state 33
+
+    (12) YACCS -> precedence equal oBracket LISTPRECE cBracket YACCS .
+
+    $end            reduce using rule 12 (YACCS -> precedence equal oBracket LISTPRECE cBracket YACCS .)
+
+
+state 34
+
+    (13) LISTPRECE -> listprecedence comma LISTPRECE .
+
+    cBracket        reduce using rule 13 (LISTPRECE -> listprecedence comma LISTPRECE .)
+
+
+state 35
+
+    (6) CONTLISTTOKENS -> comma token CONTLISTTOKENS .
+
+    cBracket        reduce using rule 6 (CONTLISTTOKENS -> comma token CONTLISTTOKENS .)
+
