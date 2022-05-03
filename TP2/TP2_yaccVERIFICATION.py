@@ -2,10 +2,6 @@ import ply.yacc as yacc
 from TP2_lex import tokens
 import sys
 
-flex = open("lex.py","a")
-fyacc = open("yacc.py","a")
-
-
 #-------------------------------------------GRAMMAR----------------------------------------------
 
 def p_GRAMMATICA(p):
@@ -34,37 +30,33 @@ def p_LEX(p):
 
 def p_LEXES_LITERALS(p):
     "LEXES : literals equal listliterals LEXES"
-    flex.write("\nliterals = "+p[3])
+    f = open("lex.py","a")
+    f.write("\nliterals = "+p[3])
+    f.close()
 
 #-------------------------------------------TOKENS----------------------------------------------
 def p_LEXES_TOKENS(p):
     "LEXES : tokens equal oBracket LISTTOKENS cBracket LEXES "
-    flex.write("\ntokens = ['"+parser.tokens[0]+"'")
-
-    for token in parser.tokens[1:]:
-        flex.write(",'"+token+"'")
-
-    flex.write("]")
+    #print(p[4])
 
 def p_LISTTOKENS(p):
-    "LISTTOKENS : prime token prime CONTLISTTOKENS"
-    parser.tokens.append(p[2])
+    "LISTTOKENS : token CONTLISTTOKENS"
+    #p[0] = [p[1]] + p[2]
 
 def p_CONTLISTTOKENS(p):
-    "CONTLISTTOKENS : comma prime token prime CONTLISTTOKENS "
-    parser.tokens.append(p[3])
+    "CONTLISTTOKENS : comma token CONTLISTTOKENS "
+    #p[0] = [p[2]] + p[3]
 
 def p_CONTLISTTOKENS_EMPTY(p):
     "CONTLISTTOKENS : "
-    
-
-
-
+    #p[0] = []
 #-------------------------------------------IGNORE----------------------------------------------
 
 def p_LEXES_IGNORE(p):
     "LEXES : ignor equal listignore LEXES"
-    flex.write("\nt_ignore = "+p[3])
+    f = open("lex.py","w")
+    f.write("\nt_ignore = "+p[3])
+    f.close()
 
 #--------------------------------------------EMPTY LEX-----------------------------------------------
 
@@ -108,7 +100,7 @@ def p_error(p):
 
 
 
+
 parser = yacc.yacc()
-parser.tokens = []
 
 parser.parse(sys.stdin.read())

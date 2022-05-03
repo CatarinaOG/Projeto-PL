@@ -1,8 +1,7 @@
 import ply.lex as lex
 
 tokens = ['lex','yacc','python','literals','listliterals','equal','colon','comma',
-        'quote','token','tokens','oBracket','cBracket','ignor','listignore','precedence',
-        'listprecedence','prime']
+        'quote','listTokens','tokens','oBracket','cBracket','ignor','listignore','precedence','listprecedence']
 
 
 states = ( 
@@ -11,6 +10,7 @@ states = (
     ('PYTHON','exclusive'),
     ('COMMENT','exclusive'),
     ('IGNORE','exclusive'),
+
 )
 
 t_ANY_ignore = " \t\r\n"
@@ -86,8 +86,8 @@ def t_ANY_oBracket(t):
     r'\['
     return t
 
-def t_LEX_token(t):
-    r'[a-zA-Z]+'
+def t_LEX_listTokens(t):
+    r'\'[a-zA-Z]+\'+'
     return t
 
 #-------------------------------------------IGNORE----------------------------------------------
@@ -112,23 +112,19 @@ def t_precedence(t):
 def t_listprecedence(t):
     r'\(.+?\)'
     return t
-"""
+
 #-------------------------------------------OURS_LITERALS----------------------------------------------
 
 
-def t_ANY_colon(t):
+def t_colon(t):
     r':'
     return t
 
-def t_ANY_comma(t):
+def t_comma(t):
     r','
     return t
 
-def t_ANY_prime(t):
-    r'\''
-    return t
-
-
+"""
 #-------------------------------------------funcoes----------------------------------------------
 
 def t_ANY_error(t):
@@ -137,11 +133,8 @@ def t_ANY_error(t):
 
 
 lexer = lex.lex()
-"""
-
 import sys
 for linha in sys.stdin:
     lexer.input(linha)
     for tok in lexer:
         print(tok)
-"""

@@ -1,3 +1,5 @@
 %%LEX
 %literals=",+/"
+%ignore=" \n\t"
+%tokens=['VAR','NUMBER']
 %%YACC
