@@ -4,24 +4,38 @@ import sys
 
 #-------------------------------------------GRAMMAR----------------------------------------------
 
-def p_GRAMMAR(p):
-    "Z : LEX YACC"
-    print("Acabou")
+def p_GRAMMATICA(p):
+    "Z : GRAMMAR"
+
+def p_GRAMMAR_lex(p):
+    "GRAMMAR : GRAMMAR LEX"
+
+def p_GRAMMAR_yacc(p):
+    "GRAMMAR : GRAMMAR yacc"
+
+def p_GRAMMAR_python(p):
+    "GRAMMAR : GRAMMAR python"
+
+def p_GRAMMAR_empty(p):
+    "GRAMMAR : "
+
 
 
 #-------------------------------------------LEX----------------------------------------------
 
 def p_LEX(p):
-    "LEX : lex LEXES"
+    "LEX : lex LEXES "
 
 #-------------------------------------------LITERALS----------------------------------------------
 
 def p_LEXES_LITERALS(p):
-    "LEXES : literals equal listliterals LEXES "
-
+    "LEXES : literals equal listliterals LEXES"
+    f = open("lex.py","w")
+    f.write("hello")
+    f.close()
 
 #-------------------------------------------TOKENS----------------------------------------------
-
+"""
 def p_LEXES_TOKENS(p):
     "LEXES : tokens equal oBracket LISTTOKENS cBracket LEXES "
     print(p[4])
@@ -43,18 +57,16 @@ def p_CONTLISTTOKENS_EMPTY(p):
 def p_LEXES_IGNORE(p):
     "LEXES : ignor equal listignore LEXES"
     print(p[3])
-
+"""
 #--------------------------------------------EMPTY LEX-----------------------------------------------
 
 
 def p_LEXES_EMPTY(p):
     "LEXES : "
 
-def p_LEX_EMPTY(p):
-    "LEX : "
 
 #--------------------------------------------YACC-----------------------------------------------
-
+"""
 def p_YACC(p):
     "YACC : yacc YACCS"
 
@@ -80,7 +92,7 @@ def p_LISTPRECE_EMPTY(p):
 
 def p_YACC_EMPTY(p):
     "YACCS : "
-
+"""
 
 def p_error(p):
     print('Erro sintatico: ', p)
@@ -90,10 +102,5 @@ def p_error(p):
 
 
 parser = yacc.yacc()
-parser.isLex = False
-parser.isYacc = False
-parser.literals = []
 
-for linha in sys.stdin:
-    parser.sucess = True
-    parser.parse(linha)
+parser.parse(sys.stdin.read())
