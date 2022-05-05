@@ -2,7 +2,7 @@ import ply.lex as lex
 
 tokens = ['lex','yacc','python','literals','listliterals','equal','colon','comma',
         'quote','token','tokens','oBracket','cBracket','ignor','listignore','precedence',
-        'listprecedence','prime']
+        'listprecedence','prime','er','expReg','expDef']
 
 
 states = ( 
@@ -11,14 +11,14 @@ states = (
     ('PYTHON','exclusive'),
     ('COMMENT','exclusive'),
     ('IGNORE','exclusive'),
+    ('TOKENDEF','exclusive'),
 )
 
 t_ANY_ignore = " \t\r\n"
-t_LEX_ignore = " \t\r\n"
-t_YACC_ignore = " \t\r\n"
-t_PYTHON_ignore = " \t\r\n"
-t_COMMENT_ignore = " \t\r\n"
 t_IGNORE_ignore =  "\t\r\n"
+t_TOKENDEF_ignore =  ""
+
+
 
 
 #-------------------------------------------LEX----------------------------------------------
@@ -78,13 +78,6 @@ def t_LEX_tokens(t):
     r'%tokens'
     return t
 
-def t_ANY_cBracket(t):
-    r'\]'
-    return t
-
-def t_ANY_oBracket(t):
-    r'\['
-    return t
 
 def t_LEX_token(t):
     r'[a-zA-Z]+'
@@ -103,8 +96,24 @@ def t_IGNORE_listignore(t):
     t.lexer.begin("LEX")
     return t
 
+#-------------------------------------------RegularExpression----------------------------------------------
+
+
+def t_LEX_er(t):
+    r'%er'
+    t.lexer.begin("TOKENDEF")
+    return t
+
+def t_TOKENDEF_expReg(t):
+    r'[^\s]+'
+    return t
+
+def t_TOKENDEF_expDef(t):
+    r'[^\n]+'
+    t.lexer.begin("LEX")
+    return t
+
 #-------------------------------------------PRECEDENCE----------------------------------------------
-"""
 def t_precedence(t):
     r'%precedence'
     return t
@@ -112,7 +121,6 @@ def t_precedence(t):
 def t_listprecedence(t):
     r'\(.+?\)'
     return t
-"""
 #-------------------------------------------OURS_LITERALS----------------------------------------------
 
 
@@ -128,6 +136,13 @@ def t_ANY_prime(t):
     r'\''
     return t
 
+def t_ANY_cBracket(t):
+    r'\]'
+    return t
+
+def t_ANY_oBracket(t):
+    r'\['
+    return t
 
 #-------------------------------------------funcoes----------------------------------------------
 
@@ -137,8 +152,13 @@ def t_ANY_error(t):
 
 
 lexer = lex.lex()
-"""
 
+
+
+
+
+
+"""
 import sys
 for linha in sys.stdin:
     lexer.input(linha)

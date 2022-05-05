@@ -34,17 +34,12 @@ def p_LEX(p):
 
 def p_LEXES_LITERALS(p):
     "LEXES : literals equal listliterals LEXES"
-    flex.write("\nliterals = "+p[3])
+    parser.literals = p[3]
+
 
 #-------------------------------------------TOKENS----------------------------------------------
 def p_LEXES_TOKENS(p):
     "LEXES : tokens equal oBracket LISTTOKENS cBracket LEXES "
-    flex.write("\ntokens = ['"+parser.tokens[0]+"'")
-
-    for token in parser.tokens[1:]:
-        flex.write(",'"+token+"'")
-
-    flex.write("]")
 
 def p_LISTTOKENS(p):
     "LISTTOKENS : prime token prime CONTLISTTOKENS"
@@ -58,13 +53,18 @@ def p_CONTLISTTOKENS_EMPTY(p):
     "CONTLISTTOKENS : "
     
 
-
-
 #-------------------------------------------IGNORE----------------------------------------------
 
 def p_LEXES_IGNORE(p):
     "LEXES : ignor equal listignore LEXES"
     flex.write("\nt_ignore = "+p[3])
+
+#--------------------------------------------ExpDefs-----------------------------------------------
+
+def p_LEXES_EXPDEF(p):
+    "LEXES : er expReg expDef LEXES"
+    parser.expReg.append(p[2])
+    parser.expDef.append(p[3])
 
 #--------------------------------------------EMPTY LEX-----------------------------------------------
 
@@ -74,7 +74,6 @@ def p_LEXES_EMPTY(p):
 
 
 #--------------------------------------------YACC-----------------------------------------------
-"""
 def p_YACC(p):
     "YACC : yacc YACCS"
 
@@ -100,7 +99,6 @@ def p_LISTPRECE_EMPTY(p):
 
 def p_YACC_EMPTY(p):
     "YACCS : "
-"""
 
 def p_error(p):
     print('Erro sintatico: ', p)
@@ -108,7 +106,11 @@ def p_error(p):
 
 
 
+
 parser = yacc.yacc()
 parser.tokens = []
+parser.literals = ""
+parser.expReg = []
+parser.expDef = []
 
 parser.parse(sys.stdin.read())
