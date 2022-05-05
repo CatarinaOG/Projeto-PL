@@ -17,7 +17,7 @@ states = (
 t_ANY_ignore = " \t\r\n"
 t_IGNORE_ignore =  "\t\r\n"
 t_TOKENDEF_ignore =  "\t\r\n"
-
+t_YACC_ignore = " \t\r\n"
 
 
 
@@ -113,15 +113,15 @@ def t_TOKENDEF_expDef(t):
     return t
 
 #-------------------------------------------PRECEDENCE----------------------------------------------
-"""
-def t_precedence(t):
+
+def t_YACC_precedence(t):
     r'%precedence'
     return t
 
-def t_listprecedence(t):
-    r'\(.+?\)'
+def t_YACC_listprecedence(t):
+    r'\[[^\]]+\]'
     return t
-"""
+
 #-------------------------------------------OURS_LITERALS----------------------------------------------
 
 
@@ -137,11 +137,11 @@ def t_ANY_prime(t):
     r'\''
     return t
 
-def t_ANY_cBracket(t):
+def t_LEX_cBracket(t):
     r'\]'
     return t
 
-def t_ANY_oBracket(t):
+def t_LEX_oBracket(t):
     r'\['
     return t
 
@@ -156,8 +156,7 @@ lexer = lex.lex()
 
 """
 import sys
-for linha in sys.stdin:
-    lexer.input(linha)
-    for tok in lexer:
-        print(tok)
+lexer.input(sys.stdin.read())
+for tok in lexer:
+    print(tok)
 """

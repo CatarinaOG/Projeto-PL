@@ -34,15 +34,6 @@ def writeTokens(tokens):
 
 #-------------------------------------------EXP DEF----------------------------------------------
 
-def isPrint(expDef):
-    printL = re.search("\".+\"",expDef)
-    printAux = printL.group(0)
-
-    if not printAux:
-        return 0
-    else:
-        return 1
-
 def writeExpDefs(parser):
     nrExp = len(parser.expDef)
     
@@ -59,7 +50,6 @@ def writeExpDefs(parser):
             sizeExp = len(parser.expDef[i])
             
             while sizeExp > 0:
-                print(parser.expDef[i])
                 errorPrint = re.match("f\"[^\"]+\"",parser.expDef[i])
                 if errorPrint:
                     size = len(errorPrint.group(0)) + 1
@@ -73,8 +63,13 @@ def writeExpDefs(parser):
                     parser.expDef[i] = parser.expDef[i][size:]
                     sizeExp -= size
             flex.write("\n")
-                
-                
+
+#-----------------------------------------PRECEDENCE----------------------------------------------
+
+def writePrecedence(precedence):
+    fyacc.write("precedence = "+precedence)
+
+
 #-------------------------------------------GRAMMAR----------------------------------------------
 
 def p_GRAMMATICA(p):
@@ -84,12 +79,13 @@ def p_GRAMMATICA(p):
     writeIgnore(parser.ignore)
     writeTokens(parser.tokens)    
     writeExpDefs(parser)
+    writePrecedence(parser.precedence)
             
 def p_GRAMMAR_lex(p):
     "GRAMMAR : GRAMMAR LEX"
 
 def p_GRAMMAR_yacc(p):
-    "GRAMMAR : GRAMMAR yacc"
+    "GRAMMAR : GRAMMAR YACC"
 
 def p_GRAMMAR_python(p):
     "GRAMMAR : GRAMMAR python"
@@ -160,21 +156,11 @@ def p_YACC(p):
 
 
 #-------------------------------------------PRECEDENCE----------------------------------------------
-""""
+
 def p_YACCS_PREC(p):
-    "YACCS : precedence equal oBracket LISTPRECE cBracket YACCS"
-    print(p[4])
+    "YACCS : precedence equal listprecedence YACCS"
+    parser.precedence = p[3]
 
-def p_LISTPRECE(p):
-    "LISTPRECE : listprecedence comma LISTPRECE"
-    p[0] = [p[1]] +p[3]
-
-def p_LISTPRECE_EMPTY(p):
-    "LISTPRECE : "
-    p[0] = []
-
-#verificar que é um tuplo
-"""
 
 #--------------------------------------------EMPTY YACC-----------------------------------------------
 
@@ -186,13 +172,12 @@ def p_error(p):
     parser.sucess = False
 
 
-
-
 parser = yacc.yacc()
 parser.tokens = []
 parser.literals = ""
 parser.ignore = ""
 parser.expReg = []
 parser.expDef = []
+parser.precedence = ""
 
 parser.parse(sys.stdin.read())

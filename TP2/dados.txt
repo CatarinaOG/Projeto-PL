@@ -7,3 +7,15 @@
 \d+(\.\d+)? return('NUMBER', float(t.value))
 . error(f"Illegal character '{t.value[0]}', [{t.lexer.lineno}]",t.lexer.skip(1),f"hello")
 
+%%YACC
+
+%precedence = [
+    ('left','+','-'),
+    ('left','*','/'),
+    ('right','UMINUS'),
+]
+
+ts = { }
+
+%grammar
+stat : VAR ’=’ exp { ts[t[1]] = t[3] }
