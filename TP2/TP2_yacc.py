@@ -7,15 +7,22 @@ flex = open("lex.py","a")
 fyacc = open("yacc.py","a")
 
 
-def tokenNameFunc(expDef):
-    name = re.search("\'.+\'",expDef)
-    return name.group(0).strip("\'")
+#-------------------------------------------LITERALS----------------------------------------------
 
 def writeLiterals(literals):
     flex.write("\nliterals = "+literals)
 
+#-------------------------------------------IGNORE----------------------------------------------
+
 def writeIgnore(ignore):
     flex.write("\nt_ignore = "+ignore)
+
+#-------------------------------------------TOKENS----------------------------------------------
+
+def tokenNameFunc(expDef):
+    name = re.search("\'.+\'",expDef)
+    return name.group(0).strip("\'")
+
 
 def writeTokens(tokens):
     flex.write("\ntokens = [\'"+tokens[0]+"\'")
@@ -24,6 +31,8 @@ def writeTokens(tokens):
         flex.write(",\'"+token+"\'")
 
     flex.write("]\n")
+
+#-------------------------------------------EXP DEF----------------------------------------------
 
 def isPrint(expDef):
     printL = re.search("\".+\"",expDef)
@@ -34,14 +43,6 @@ def isPrint(expDef):
     else:
         return 1
 
-def getPrintLine(expDef):
-    printL = re.search("\".+\"",expDef)
-    printAux = printL.group(0)
-    
-    printAux = printAux.replace("{","\"+")
-    printAux = printAux.replace("}","+\"")
-    return printAux
-
 def writeExpDefs(parser):
     nrExp = len(parser.expDef)
     
@@ -50,29 +51,39 @@ def writeExpDefs(parser):
             tokenName = tokenNameFunc(parser.expDef[i])
             flex.write("\ndef t_" + tokenName + "(t):")
             flex.write("\n  r\'" + parser.expReg[i] + "\'")
-            flex.write("\n  return t\n")
+            flex.write("\n " + parser.expDef[i] + "\n")
         else:
-            
             flex.write("\ndef t_error(t):")
-            printLine = getPrintLine(parser.expDef[i])
-            flex.write("\n  print("+ printLine+")\n")
-
-
-
-
-
-
-
+            parser.expDef[i] =parser.expDef[i][7:]
+            parser.expDef[i] =parser.expDef[i][:-2]
+            sizeExp = len(parser.expDef[i])
+            
+            while sizeExp > 0:
+                print(parser.expDef[i])
+                errorPrint = re.match("f\"[^\"]+\"",parser.expDef[i])
+                if errorPrint:
+                    size = len(errorPrint.group(0)) + 1
+                    flex.write("\n  print("+errorPrint.group(0)+")")
+                    parser.expDef[i] = parser.expDef[i][size:]
+                    sizeExp -= size
+                else:
+                    statement = re.search("[^,]+",parser.expDef[i])
+                    size = len(statement.group(0))  + 1
+                    flex.write("\n  "+statement.group(0))
+                    parser.expDef[i] = parser.expDef[i][size:]
+                    sizeExp -= size
+            flex.write("\n")
+                
+                
 #-------------------------------------------GRAMMAR----------------------------------------------
 
 def p_GRAMMATICA(p):
     "Z : GRAMMAR"
 
-    #writeLiterals(parser.literals)
-    #writeIgnore(parser.ignore)
-    #writeTokens(parser.tokens)    
-    #writeExpDefs(parser)
-    print(parser.expDef)    
+    writeLiterals(parser.literals)
+    writeIgnore(parser.ignore)
+    writeTokens(parser.tokens)    
+    writeExpDefs(parser)
             
 def p_GRAMMAR_lex(p):
     "GRAMMAR : GRAMMAR LEX"
