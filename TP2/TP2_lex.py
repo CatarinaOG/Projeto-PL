@@ -16,7 +16,7 @@ states = (
 
 t_ANY_ignore = " \t\r\n"
 t_IGNORE_ignore =  "\t\r\n"
-t_TOKENDEF_ignore =  ""
+t_TOKENDEF_ignore =  "\t\r\n"
 
 
 
@@ -100,7 +100,7 @@ def t_IGNORE_listignore(t):
 
 
 def t_LEX_er(t):
-    r'%er'
+    r'%er\r\n'
     t.lexer.begin("TOKENDEF")
     return t
 
@@ -110,10 +110,10 @@ def t_TOKENDEF_expReg(t):
 
 def t_TOKENDEF_expDef(t):
     r'[^\n]+'
-    t.lexer.begin("LEX")
     return t
 
 #-------------------------------------------PRECEDENCE----------------------------------------------
+"""
 def t_precedence(t):
     r'%precedence'
     return t
@@ -121,6 +121,7 @@ def t_precedence(t):
 def t_listprecedence(t):
     r'\(.+?\)'
     return t
+"""
 #-------------------------------------------OURS_LITERALS----------------------------------------------
 
 
@@ -152,11 +153,6 @@ def t_ANY_error(t):
 
 
 lexer = lex.lex()
-
-
-
-
-
 
 """
 import sys

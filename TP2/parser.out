@@ -22,7 +22,12 @@ Rule 9     LISTTOKENS -> prime token prime CONTLISTTOKENS
 Rule 10    CONTLISTTOKENS -> comma prime token prime CONTLISTTOKENS
 Rule 11    CONTLISTTOKENS -> <empty>
 Rule 12    LEXES -> ignor equal listignore LEXES
-Rule 13    LEXES -> <empty>
+Rule 13    LEXES -> er LISTEXPDEFS LEXES
+Rule 14    LISTEXPDEFS -> expReg expDef LISTEXPDEFS
+Rule 15    LISTEXPDEFS -> <empty>
+Rule 16    LEXES -> <empty>
+Rule 17    YACC -> yacc YACCS
+Rule 18    YACCS -> <empty>
 
 Terminals, with rules where they appear
 
@@ -30,7 +35,10 @@ cBracket             : 8
 colon                : 
 comma                : 10
 equal                : 7 8 12
+er                   : 13
 error                : 
+expDef               : 14
+expReg               : 14
 ignor                : 12
 lex                  : 6
 listignore           : 12
@@ -44,15 +52,18 @@ python               : 4
 quote                : 
 token                : 9 10
 tokens               : 8
-yacc                 : 3
+yacc                 : 3 17
 
 Nonterminals, with rules where they appear
 
 CONTLISTTOKENS       : 9 10
 GRAMMAR              : 1 2 3 4
 LEX                  : 2
-LEXES                : 6 7 8 12
+LEXES                : 6 7 8 12 13
+LISTEXPDEFS          : 13 14
 LISTTOKENS           : 8
+YACC                 : 
+YACCS                : 17
 Z                    : 0
 
 Parsing method: LALR
@@ -131,15 +142,17 @@ state 6
     (7) LEXES -> . literals equal listliterals LEXES
     (8) LEXES -> . tokens equal oBracket LISTTOKENS cBracket LEXES
     (12) LEXES -> . ignor equal listignore LEXES
-    (13) LEXES -> .
+    (13) LEXES -> . er LISTEXPDEFS LEXES
+    (16) LEXES -> .
 
     literals        shift and go to state 8
     tokens          shift and go to state 9
     ignor           shift and go to state 10
-    yacc            reduce using rule 13 (LEXES -> .)
-    python          reduce using rule 13 (LEXES -> .)
-    lex             reduce using rule 13 (LEXES -> .)
-    $end            reduce using rule 13 (LEXES -> .)
+    er              shift and go to state 11
+    yacc            reduce using rule 16 (LEXES -> .)
+    python          reduce using rule 16 (LEXES -> .)
+    lex             reduce using rule 16 (LEXES -> .)
+    $end            reduce using rule 16 (LEXES -> .)
 
     LEXES                          shift and go to state 7
 
@@ -157,90 +170,167 @@ state 8
 
     (7) LEXES -> literals . equal listliterals LEXES
 
-    equal           shift and go to state 11
+    equal           shift and go to state 12
 
 
 state 9
 
     (8) LEXES -> tokens . equal oBracket LISTTOKENS cBracket LEXES
 
-    equal           shift and go to state 12
+    equal           shift and go to state 13
 
 
 state 10
 
     (12) LEXES -> ignor . equal listignore LEXES
 
-    equal           shift and go to state 13
+    equal           shift and go to state 14
 
 
 state 11
 
-    (7) LEXES -> literals equal . listliterals LEXES
+    (13) LEXES -> er . LISTEXPDEFS LEXES
+    (14) LISTEXPDEFS -> . expReg expDef LISTEXPDEFS
+    (15) LISTEXPDEFS -> .
 
-    listliterals    shift and go to state 14
+    expReg          shift and go to state 16
+    literals        reduce using rule 15 (LISTEXPDEFS -> .)
+    tokens          reduce using rule 15 (LISTEXPDEFS -> .)
+    ignor           reduce using rule 15 (LISTEXPDEFS -> .)
+    er              reduce using rule 15 (LISTEXPDEFS -> .)
+    yacc            reduce using rule 15 (LISTEXPDEFS -> .)
+    python          reduce using rule 15 (LISTEXPDEFS -> .)
+    lex             reduce using rule 15 (LISTEXPDEFS -> .)
+    $end            reduce using rule 15 (LISTEXPDEFS -> .)
 
+    LISTEXPDEFS                    shift and go to state 15
 
 state 12
 
-    (8) LEXES -> tokens equal . oBracket LISTTOKENS cBracket LEXES
+    (7) LEXES -> literals equal . listliterals LEXES
 
-    oBracket        shift and go to state 15
+    listliterals    shift and go to state 17
 
 
 state 13
 
-    (12) LEXES -> ignor equal . listignore LEXES
+    (8) LEXES -> tokens equal . oBracket LISTTOKENS cBracket LEXES
 
-    listignore      shift and go to state 16
+    oBracket        shift and go to state 18
 
 
 state 14
+
+    (12) LEXES -> ignor equal . listignore LEXES
+
+    listignore      shift and go to state 19
+
+
+state 15
+
+    (13) LEXES -> er LISTEXPDEFS . LEXES
+    (7) LEXES -> . literals equal listliterals LEXES
+    (8) LEXES -> . tokens equal oBracket LISTTOKENS cBracket LEXES
+    (12) LEXES -> . ignor equal listignore LEXES
+    (13) LEXES -> . er LISTEXPDEFS LEXES
+    (16) LEXES -> .
+
+    literals        shift and go to state 8
+    tokens          shift and go to state 9
+    ignor           shift and go to state 10
+    er              shift and go to state 11
+    yacc            reduce using rule 16 (LEXES -> .)
+    python          reduce using rule 16 (LEXES -> .)
+    lex             reduce using rule 16 (LEXES -> .)
+    $end            reduce using rule 16 (LEXES -> .)
+
+    LEXES                          shift and go to state 20
+
+state 16
+
+    (14) LISTEXPDEFS -> expReg . expDef LISTEXPDEFS
+
+    expDef          shift and go to state 21
+
+
+state 17
 
     (7) LEXES -> literals equal listliterals . LEXES
     (7) LEXES -> . literals equal listliterals LEXES
     (8) LEXES -> . tokens equal oBracket LISTTOKENS cBracket LEXES
     (12) LEXES -> . ignor equal listignore LEXES
-    (13) LEXES -> .
+    (13) LEXES -> . er LISTEXPDEFS LEXES
+    (16) LEXES -> .
 
     literals        shift and go to state 8
     tokens          shift and go to state 9
     ignor           shift and go to state 10
-    yacc            reduce using rule 13 (LEXES -> .)
-    python          reduce using rule 13 (LEXES -> .)
-    lex             reduce using rule 13 (LEXES -> .)
-    $end            reduce using rule 13 (LEXES -> .)
+    er              shift and go to state 11
+    yacc            reduce using rule 16 (LEXES -> .)
+    python          reduce using rule 16 (LEXES -> .)
+    lex             reduce using rule 16 (LEXES -> .)
+    $end            reduce using rule 16 (LEXES -> .)
 
-    LEXES                          shift and go to state 17
+    LEXES                          shift and go to state 22
 
-state 15
+state 18
 
     (8) LEXES -> tokens equal oBracket . LISTTOKENS cBracket LEXES
     (9) LISTTOKENS -> . prime token prime CONTLISTTOKENS
 
-    prime           shift and go to state 19
+    prime           shift and go to state 24
 
-    LISTTOKENS                     shift and go to state 18
+    LISTTOKENS                     shift and go to state 23
 
-state 16
+state 19
 
     (12) LEXES -> ignor equal listignore . LEXES
     (7) LEXES -> . literals equal listliterals LEXES
     (8) LEXES -> . tokens equal oBracket LISTTOKENS cBracket LEXES
     (12) LEXES -> . ignor equal listignore LEXES
-    (13) LEXES -> .
+    (13) LEXES -> . er LISTEXPDEFS LEXES
+    (16) LEXES -> .
 
     literals        shift and go to state 8
     tokens          shift and go to state 9
     ignor           shift and go to state 10
-    yacc            reduce using rule 13 (LEXES -> .)
-    python          reduce using rule 13 (LEXES -> .)
-    lex             reduce using rule 13 (LEXES -> .)
-    $end            reduce using rule 13 (LEXES -> .)
+    er              shift and go to state 11
+    yacc            reduce using rule 16 (LEXES -> .)
+    python          reduce using rule 16 (LEXES -> .)
+    lex             reduce using rule 16 (LEXES -> .)
+    $end            reduce using rule 16 (LEXES -> .)
 
-    LEXES                          shift and go to state 20
+    LEXES                          shift and go to state 25
 
-state 17
+state 20
+
+    (13) LEXES -> er LISTEXPDEFS LEXES .
+
+    yacc            reduce using rule 13 (LEXES -> er LISTEXPDEFS LEXES .)
+    python          reduce using rule 13 (LEXES -> er LISTEXPDEFS LEXES .)
+    lex             reduce using rule 13 (LEXES -> er LISTEXPDEFS LEXES .)
+    $end            reduce using rule 13 (LEXES -> er LISTEXPDEFS LEXES .)
+
+
+state 21
+
+    (14) LISTEXPDEFS -> expReg expDef . LISTEXPDEFS
+    (14) LISTEXPDEFS -> . expReg expDef LISTEXPDEFS
+    (15) LISTEXPDEFS -> .
+
+    expReg          shift and go to state 16
+    literals        reduce using rule 15 (LISTEXPDEFS -> .)
+    tokens          reduce using rule 15 (LISTEXPDEFS -> .)
+    ignor           reduce using rule 15 (LISTEXPDEFS -> .)
+    er              reduce using rule 15 (LISTEXPDEFS -> .)
+    yacc            reduce using rule 15 (LISTEXPDEFS -> .)
+    python          reduce using rule 15 (LISTEXPDEFS -> .)
+    lex             reduce using rule 15 (LISTEXPDEFS -> .)
+    $end            reduce using rule 15 (LISTEXPDEFS -> .)
+
+    LISTEXPDEFS                    shift and go to state 26
+
+state 22
 
     (7) LEXES -> literals equal listliterals LEXES .
 
@@ -250,21 +340,21 @@ state 17
     $end            reduce using rule 7 (LEXES -> literals equal listliterals LEXES .)
 
 
-state 18
+state 23
 
     (8) LEXES -> tokens equal oBracket LISTTOKENS . cBracket LEXES
 
-    cBracket        shift and go to state 21
+    cBracket        shift and go to state 27
 
 
-state 19
+state 24
 
     (9) LISTTOKENS -> prime . token prime CONTLISTTOKENS
 
-    token           shift and go to state 22
+    token           shift and go to state 28
 
 
-state 20
+state 25
 
     (12) LEXES -> ignor equal listignore LEXES .
 
@@ -274,32 +364,48 @@ state 20
     $end            reduce using rule 12 (LEXES -> ignor equal listignore LEXES .)
 
 
-state 21
+state 26
+
+    (14) LISTEXPDEFS -> expReg expDef LISTEXPDEFS .
+
+    literals        reduce using rule 14 (LISTEXPDEFS -> expReg expDef LISTEXPDEFS .)
+    tokens          reduce using rule 14 (LISTEXPDEFS -> expReg expDef LISTEXPDEFS .)
+    ignor           reduce using rule 14 (LISTEXPDEFS -> expReg expDef LISTEXPDEFS .)
+    er              reduce using rule 14 (LISTEXPDEFS -> expReg expDef LISTEXPDEFS .)
+    yacc            reduce using rule 14 (LISTEXPDEFS -> expReg expDef LISTEXPDEFS .)
+    python          reduce using rule 14 (LISTEXPDEFS -> expReg expDef LISTEXPDEFS .)
+    lex             reduce using rule 14 (LISTEXPDEFS -> expReg expDef LISTEXPDEFS .)
+    $end            reduce using rule 14 (LISTEXPDEFS -> expReg expDef LISTEXPDEFS .)
+
+
+state 27
 
     (8) LEXES -> tokens equal oBracket LISTTOKENS cBracket . LEXES
     (7) LEXES -> . literals equal listliterals LEXES
     (8) LEXES -> . tokens equal oBracket LISTTOKENS cBracket LEXES
     (12) LEXES -> . ignor equal listignore LEXES
-    (13) LEXES -> .
+    (13) LEXES -> . er LISTEXPDEFS LEXES
+    (16) LEXES -> .
 
     literals        shift and go to state 8
     tokens          shift and go to state 9
     ignor           shift and go to state 10
-    yacc            reduce using rule 13 (LEXES -> .)
-    python          reduce using rule 13 (LEXES -> .)
-    lex             reduce using rule 13 (LEXES -> .)
-    $end            reduce using rule 13 (LEXES -> .)
+    er              shift and go to state 11
+    yacc            reduce using rule 16 (LEXES -> .)
+    python          reduce using rule 16 (LEXES -> .)
+    lex             reduce using rule 16 (LEXES -> .)
+    $end            reduce using rule 16 (LEXES -> .)
 
-    LEXES                          shift and go to state 23
+    LEXES                          shift and go to state 29
 
-state 22
+state 28
 
     (9) LISTTOKENS -> prime token . prime CONTLISTTOKENS
 
-    prime           shift and go to state 24
+    prime           shift and go to state 30
 
 
-state 23
+state 29
 
     (8) LEXES -> tokens equal oBracket LISTTOKENS cBracket LEXES .
 
@@ -309,57 +415,57 @@ state 23
     $end            reduce using rule 8 (LEXES -> tokens equal oBracket LISTTOKENS cBracket LEXES .)
 
 
-state 24
+state 30
 
     (9) LISTTOKENS -> prime token prime . CONTLISTTOKENS
     (10) CONTLISTTOKENS -> . comma prime token prime CONTLISTTOKENS
     (11) CONTLISTTOKENS -> .
 
-    comma           shift and go to state 26
+    comma           shift and go to state 32
     cBracket        reduce using rule 11 (CONTLISTTOKENS -> .)
 
-    CONTLISTTOKENS                 shift and go to state 25
+    CONTLISTTOKENS                 shift and go to state 31
 
-state 25
+state 31
 
     (9) LISTTOKENS -> prime token prime CONTLISTTOKENS .
 
     cBracket        reduce using rule 9 (LISTTOKENS -> prime token prime CONTLISTTOKENS .)
 
 
-state 26
+state 32
 
     (10) CONTLISTTOKENS -> comma . prime token prime CONTLISTTOKENS
 
-    prime           shift and go to state 27
+    prime           shift and go to state 33
 
 
-state 27
+state 33
 
     (10) CONTLISTTOKENS -> comma prime . token prime CONTLISTTOKENS
 
-    token           shift and go to state 28
+    token           shift and go to state 34
 
 
-state 28
+state 34
 
     (10) CONTLISTTOKENS -> comma prime token . prime CONTLISTTOKENS
 
-    prime           shift and go to state 29
+    prime           shift and go to state 35
 
 
-state 29
+state 35
 
     (10) CONTLISTTOKENS -> comma prime token prime . CONTLISTTOKENS
     (10) CONTLISTTOKENS -> . comma prime token prime CONTLISTTOKENS
     (11) CONTLISTTOKENS -> .
 
-    comma           shift and go to state 26
+    comma           shift and go to state 32
     cBracket        reduce using rule 11 (CONTLISTTOKENS -> .)
 
-    CONTLISTTOKENS                 shift and go to state 30
+    CONTLISTTOKENS                 shift and go to state 36
 
-state 30
+state 36
 
     (10) CONTLISTTOKENS -> comma prime token prime CONTLISTTOKENS .
 

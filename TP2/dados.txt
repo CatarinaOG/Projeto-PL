@@ -2,6 +2,7 @@
 %literals=",+/"
 %ignore=" \n\t"
 %tokens=['VAR','NUMBER']
-%er[a-zA-Z_][a-zA-Z0-9_]*   return(’VAR’, t.value)
-%er\d+(\.\d+)? return(’NUMBER’, float(t.value)
-%%YACC
+%er
+[a-zA-Z_][a-zA-Z0-9_]* return('VAR', t.value)	
+\d+(\.\d+)? return('NUMBER', float(t.value)
+. error(f"Illegal character '{t.value[0]}', [{t.lexer.lineno}]",t.lexer.skip(1))
