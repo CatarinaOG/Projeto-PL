@@ -2,7 +2,7 @@ import ply.lex as lex
 
 tokens = ['lex','yacc','python','literals','listliterals','equal','colon','comma',
         'quote','token','tokens','oBracket','cBracket','ignor','listignore','precedence',
-        'listprecedence','prime','er','expReg','expDef']
+        'listprecedence','prime','er','expReg','expDef','initParserVal','parserVal','endParserVal','grammar','grammarDef','funcGrammar']
 
 
 states = ( 
@@ -12,14 +12,17 @@ states = (
     ('COMMENT','exclusive'),
     ('IGNORE','exclusive'),
     ('TOKENDEF','exclusive'),
+    ('GRAMMAR','exclusive'),
+    ('PARSEVALUES','exclusive'),
+    
 )
 
 t_ANY_ignore = " \t\r\n"
 t_IGNORE_ignore =  "\t\r\n"
 t_TOKENDEF_ignore =  "\t\r\n"
 t_YACC_ignore = " \t\r\n"
-
-
+t_GRAMMAR_ignore =  " \t\r\n"
+t_PARSEVALUES_ignore =  " \t\r\n"
 
 #-------------------------------------------LEX----------------------------------------------
 
@@ -122,6 +125,37 @@ def t_YACC_listprecedence(t):
     r'\[[^\]]+\]'
     return t
 
+#-------------------------------------------DECLARATIONS----------------------------------------------
+
+def t_YACC_initParserVal(t):
+    r'%symboltable'
+    t.lexer.begin("PARSEVALUES")
+    return t
+    
+def t_PARSEVALUES_endParserVal(t):
+    r'%symboltablend'
+    t.lexer.begin("YACC")
+    return t
+
+def t_PARSEVALUES_parserVal(t):
+    r'[^\n]+\n'
+    return t
+
+#-------------------------------------------Grammar----------------------------------------------
+
+def t_YACC_grammar(t):
+    r'%grammar'
+    t.lexer.begin("GRAMMAR")
+    return t
+
+def t_GRAMMAR_grammarDef(t):
+    r'[^\t\n]+\t'
+    return t
+
+def t_GRAMMAR_funcGrammar(t):
+    r'[^\n]+\n'
+    return t
+
 #-------------------------------------------OURS_LITERALS----------------------------------------------
 
 
@@ -153,8 +187,7 @@ def t_ANY_error(t):
 
 
 lexer = lex.lex()
-
-"""
+""""
 import sys
 lexer.input(sys.stdin.read())
 for tok in lexer:
