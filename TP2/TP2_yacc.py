@@ -1,3 +1,4 @@
+from posixpath import split
 import ply.yacc as yacc
 import re
 from TP2_lex import tokens
@@ -26,10 +27,8 @@ def tokenNameFunc(expDef):
 
 def writeTokens(tokens):
     flex.write("\ntokens = [\'"+tokens[0]+"\'")
-
     for token in tokens[1:]:
         flex.write(",\'"+token+"\'")
-
     flex.write("]\n")
 
 #-------------------------------------------EXP DEF----------------------------------------------
@@ -67,8 +66,28 @@ def writeExpDefs(parser):
 #-----------------------------------------PRECEDENCE----------------------------------------------
 
 def writePrecedence(precedence):
-    fyacc.write("precedence = "+precedence)
+    fyacc.write("precedence = "+precedence + "\n")
 
+#-------------------------------------------GRAMMARYACC----------------------------------------------
+def writeGram(gram):
+    contador = 0
+    expAnt = ""
+    for i in range(0,len(gram.expGram)):
+        div = gram.expGram[i].split(":")
+        if div[0].strip(" ") == expAnt:
+            contador += 1
+        else:
+            contador = 0
+            expAnt = div[0].strip(" ")
+        funFinal = re.sub("[\s\{\}]","",gram.funcGram[i])
+
+        fyacc.write("def p_" + expAnt + "_" + str(contador)+ "(p):\n")
+        fyacc.write("\t\"" + gram.expGram[i] +"\"\n")        
+        fyacc.write("\t" + funFinal +"\n")       
+
+def writeValues(initVal):
+    for i in range(0,len(initVal)):
+        fyacc.write("parser." + initVal[i]+"\n")
 
 #-------------------------------------------GRAMMAR----------------------------------------------
 
@@ -80,6 +99,9 @@ def p_GRAMMATICA(p):
     writeTokens(parser.tokens)    
     writeExpDefs(parser)
     writePrecedence(parser.precedence)
+    writeValues(parser.initVal)
+    writeGram(parser)
+    
             
 def p_GRAMMAR_lex(p):
     "GRAMMAR : GRAMMAR LEX"
@@ -99,6 +121,8 @@ def p_GRAMMAR_empty(p):
 
 def p_LEX(p):
     "LEX : lex LEXES "
+    flex.write("import ply.lex as lex\n")
+    flex.write("lexer = lex.lex()\n")
 
 #-------------------------------------------LITERALS----------------------------------------------
 
@@ -110,6 +134,7 @@ def p_LEXES_LITERALS(p):
 #-------------------------------------------TOKENS----------------------------------------------
 def p_LEXES_TOKENS(p):
     "LEXES : tokens equal oBracket LISTTOKENS cBracket LEXES "
+
 
 def p_LISTTOKENS(p):
     "LISTTOKENS : prime token prime CONTLISTTOKENS"
@@ -153,7 +178,8 @@ def p_LEXES_EMPTY(p):
 #--------------------------------------------YACC-----------------------------------------------
 def p_YACC(p):
     "YACC : yacc YACCS"
-
+    fyacc.write("import ply.yacc as yacc\n")
+    fyacc.write("parser = yacc.yacc()\n")
 
 #-------------------------------------------PRECEDENCE----------------------------------------------
 
@@ -161,7 +187,29 @@ def p_YACCS_PREC(p):
     "YACCS : precedence equal listprecedence YACCS"
     parser.precedence = p[3]
 
+#-------------------------------------------INITVALUES----------------------------------------------
 
+def p_YACCS_initParserVal(p):
+    "YACCS : initParserVal LISTVALUES YACCS"
+
+def p_YACCS_valores(p):
+    "LISTVALUES : parserVal LISTVALUES"
+    parser.initVal.append(p[1])
+
+def p_YACCS_empty(p):
+    "LISTVALUES : endParserVal"    
+#-------------------------------------------GRAMMAR----------------------------------------------
+
+def p_YACCS_GRAMMAR(p):
+    "YACCS : grammar LISTGRAM YACCS"
+
+def p_YACCS_LISTGRAM(p):
+    "LISTGRAM : grammarDef funcGrammar LISTGRAM"
+    parser.expGram.append(p[1])
+    parser.funcGram.append(p[2])
+
+def p_YACCS_LISTGRAM_empty(p):
+    "LISTGRAM : "
 #--------------------------------------------EMPTY YACC-----------------------------------------------
 
 def p_YACC_EMPTY(p):
@@ -179,5 +227,8 @@ parser.ignore = ""
 parser.expReg = []
 parser.expDef = []
 parser.precedence = ""
+parser.initVal = []
+parser.expGram = []
+parser.funcGram = []
 
 parser.parse(sys.stdin.read())
