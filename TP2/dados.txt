@@ -17,6 +17,7 @@
 
 %symboltable
 ts = {}
+a=3
 %symboltablend
 %grammar
 stat : VAR '=' exp	{ ts[p[1]] = p[3] }

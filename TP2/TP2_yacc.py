@@ -35,6 +35,9 @@ def writeTokens(tokens):
 
 def writeExpDefs(parser):
     nrExp = len(parser.expDef)
+
+    parser.expDef.reverse()
+    parser.expReg.reverse()
     
     for i in range(0,nrExp):
         if parser.expReg[i] != '.':
@@ -69,25 +72,32 @@ def writePrecedence(precedence):
     fyacc.write("precedence = "+precedence + "\n")
 
 #-------------------------------------------GRAMMARYACC----------------------------------------------
-def writeGram(gram):
+def writeGram(parser):
     contador = 0
     expAnt = ""
-    for i in range(0,len(gram.expGram)):
-        div = gram.expGram[i].split(":")
+
+    parser.expGram.reverse()
+    parser.funcGram.reverse()
+
+    for i in range(0,len(parser.expGram)):
+        div = parser.expGram[i].split(":")
         if div[0].strip(" ") == expAnt:
             contador += 1
         else:
             contador = 0
             expAnt = div[0].strip(" ")
-        funFinal = re.sub("[\s\{\}]","",gram.funcGram[i])
+        funFinal = re.sub("[\s\{\}]","",parser.funcGram[i])
 
         fyacc.write("def p_" + expAnt + "_" + str(contador)+ "(p):\n")
-        fyacc.write("\t\"" + gram.expGram[i] +"\"\n")        
+        fyacc.write("\t\"" + parser.expGram[i] +"\"\n")        
         fyacc.write("\t" + funFinal +"\n")       
 
 def writeValues(initVal):
+
+    initVal.reverse()
+
     for i in range(0,len(initVal)):
-        fyacc.write("parser." + initVal[i]+"\n")
+        fyacc.write(initVal[i])
 
 #-------------------------------------------GRAMMAR----------------------------------------------
 
