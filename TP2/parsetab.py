@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = "left+-left*/rightUMINUSNUMBER VARstat : VAR '=' exp\tstat : exp\texp : exp '+' exp\texp : exp '-' exp\texp : exp '*' exp\texp : exp '/' exp\texp : '-' exp %prec UMINUS\texp : '(' exp ')' \texp : NUMBER\texp : VAR\t"
+_lr_signature = 'cBracket colon comma comment commentEnd endParserVal equal er expDef expReg funcGrammar funcPython grammar grammarDef ignor initParserVal lex listignore listliterals listprecedence literals oBracket otherPython parserVal precedence prime python quote token tokens yaccZ : GRAMMARGRAMMAR : GRAMMAR LEXGRAMMAR : GRAMMAR YACCGRAMMAR : GRAMMAR PYTHONGRAMMAR : LEX : lex LEXES LEXES : literals equal listliterals comment commentEnd LEXESLEXES : literals equal listliterals LEXESLEXES : tokens equal oBracket LISTTOKENS cBracket comment commentEnd LEXES LEXES : tokens equal oBracket LISTTOKENS cBracket LEXES LISTTOKENS : prime token prime CONTLISTTOKENSCONTLISTTOKENS : comma prime token prime CONTLISTTOKENS CONTLISTTOKENS : LEXES : ignor equal listignore comment commentEnd LEXESLEXES : ignor equal listignore LEXESLEXES : er LISTEXPDEFS LEXESLISTEXPDEFS : expReg expDef LISTEXPDEFSLISTEXPDEFS : expReg expDef comment commentEnd LISTEXPDEFSLISTEXPDEFS : LEXES : YACC : yacc YACCSYACCS : precedence equal listprecedence YACCSYACCS : precedence equal listprecedence comment commentEnd YACCSYACCS : initParserVal LISTVALUES YACCSLISTVALUES : parserVal LISTVALUESLISTVALUES : parserVal comment commentEnd LISTVALUESLISTVALUES : endParserValYACCS : grammar LISTGRAM YACCSLISTGRAM : grammarDef funcGrammar comment commentEnd LISTGRAMLISTGRAM : grammarDef funcGrammar LISTGRAMLISTGRAM : YACCS : PYTHON : python PYTHONSPYTHONS : LISTFUNCS LISTOTHERLISTFUNCS : funcPython LISTFUNCSLISTFUNCS : LISTOTHER : otherPython LISTOTHERLISTOTHER : '
     
-_lr_action_items = {'VAR':([0,4,5,7,8,9,10,11,],[2,13,13,13,13,13,13,13,]),'-':([0,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,],[4,-10,9,4,4,-9,4,4,4,4,4,-7,-10,9,9,-3,-4,-5,-6,-8,]),'(':([0,4,5,7,8,9,10,11,],[5,5,5,5,5,5,5,5,]),'NUMBER':([0,4,5,7,8,9,10,11,],[6,6,6,6,6,6,6,6,]),'$end':([1,2,3,6,12,13,15,16,17,18,19,20,],[0,-10,-2,-9,-7,-10,-1,-3,-4,-5,-6,-8,]),'=':([2,],[7,]),'+':([2,3,6,12,13,14,15,16,17,18,19,20,],[-10,8,-9,-7,-10,8,8,-3,-4,-5,-6,-8,]),'*':([2,3,6,12,13,14,15,16,17,18,19,20,],[-10,10,-9,-7,-10,10,10,10,10,-5,-6,-8,]),'/':([2,3,6,12,13,14,15,16,17,18,19,20,],[-10,11,-9,-7,-10,11,11,11,11,-5,-6,-8,]),')':([6,12,13,14,16,17,18,19,20,],[-9,-7,-10,20,-3,-4,-5,-6,-8,]),}
+_lr_action_items = {'lex':([0,2,3,4,5,6,7,8,9,13,14,17,18,19,20,24,27,29,30,32,33,34,35,37,38,39,40,41,42,44,45,46,48,52,53,55,59,60,61,63,64,65,66,67,68,70,72,73,74,75,76,79,],[-5,6,-2,-3,-4,-20,-32,-36,-6,-19,-21,-31,-33,-38,-36,-20,-32,-27,-32,-34,-38,-35,-20,-20,-16,-19,-32,-24,-25,-28,-31,-37,-8,-15,-17,-22,-30,-20,-20,-20,-19,-32,-26,-31,-7,-10,-14,-18,-23,-29,-20,-9,]),'yacc':([0,2,3,4,5,6,7,8,9,13,14,17,18,19,20,24,27,29,30,32,33,34,35,37,38,39,40,41,42,44,45,46,48,52,53,55,59,60,61,63,64,65,66,67,68,70,72,73,74,75,76,79,],[-5,7,-2,-3,-4,-20,-32,-36,-6,-19,-21,-31,-33,-38,-36,-20,-32,-27,-32,-34,-38,-35,-20,-20,-16,-19,-32,-24,-25,-28,-31,-37,-8,-15,-17,-22,-30,-20,-20,-20,-19,-32,-26,-31,-7,-10,-14,-18,-23,-29,-20,-9,]),'python':([0,2,3,4,5,6,7,8,9,13,14,17,18,19,20,24,27,29,30,32,33,34,35,37,38,39,40,41,42,44,45,46,48,52,53,55,59,60,61,63,64,65,66,67,68,70,72,73,74,75,76,79,],[-5,8,-2,-3,-4,-20,-32,-36,-6,-19,-21,-31,-33,-38,-36,-20,-32,-27,-32,-34,-38,-35,-20,-20,-16,-19,-32,-24,-25,-28,-31,-37,-8,-15,-17,-22,-30,-20,-20,-20,-19,-32,-26,-31,-7,-10,-14,-18,-23,-29,-20,-9,]),'$end':([0,1,2,3,4,5,6,7,8,9,13,14,17,18,19,20,24,27,29,30,32,33,34,35,37,38,39,40,41,42,44,45,46,48,52,53,55,59,60,61,63,64,65,66,67,68,70,72,73,74,75,76,79,],[-5,0,-1,-2,-3,-4,-20,-32,-36,-6,-19,-21,-31,-33,-38,-36,-20,-32,-27,-32,-34,-38,-35,-20,-20,-16,-19,-32,-24,-25,-28,-31,-37,-8,-15,-17,-22,-30,-20,-20,-20,-19,-32,-26,-31,-7,-10,-14,-18,-23,-29,-20,-9,]),'literals':([6,13,24,35,37,39,53,60,61,63,64,73,76,],[10,-19,10,10,10,-19,-17,10,10,10,-19,-18,10,]),'tokens':([6,13,24,35,37,39,53,60,61,63,64,73,76,],[11,-19,11,11,11,-19,-17,11,11,11,-19,-18,11,]),'ignor':([6,13,24,35,37,39,53,60,61,63,64,73,76,],[12,-19,12,12,12,-19,-17,12,12,12,-19,-18,12,]),'er':([6,13,24,35,37,39,53,60,61,63,64,73,76,],[13,-19,13,13,13,-19,-17,13,13,13,-19,-18,13,]),'precedence':([7,17,27,29,30,40,42,45,59,65,66,67,75,],[15,-31,15,-27,15,15,-25,-31,-30,15,-26,-31,-29,]),'initParserVal':([7,17,27,29,30,40,42,45,59,65,66,67,75,],[16,-31,16,-27,16,16,-25,-31,-30,16,-26,-31,-29,]),'grammar':([7,17,27,29,30,40,42,45,59,65,66,67,75,],[17,-31,17,-27,17,17,-25,-31,-30,17,-26,-31,-29,]),'funcPython':([8,20,],[20,20,]),'otherPython':([8,19,20,33,34,],[-36,33,-36,33,-35,]),'equal':([10,11,12,15,],[21,22,23,26,]),'expReg':([13,39,64,],[25,25,25,]),'parserVal':([16,28,57,],[28,28,28,]),'endParserVal':([16,28,57,],[29,29,29,]),'grammarDef':([17,45,67,],[31,31,31,]),'listliterals':([21,],[35,]),'oBracket':([22,],[36,]),'listignore':([23,],[37,]),'expDef':([25,],[39,]),'listprecedence':([26,],[40,]),'comment':([28,35,37,39,40,45,61,],[43,47,51,54,56,58,69,]),'funcGrammar':([31,],[45,]),'prime':([36,62,78,81,],[50,71,80,82,]),'commentEnd':([43,47,51,54,56,58,69,],[57,60,63,64,65,67,76,]),'cBracket':([49,71,77,82,83,],[61,-13,-11,-13,-12,]),'token':([50,80,],[62,81,]),'comma':([71,82,],[78,78,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'stat':([0,],[1,]),'exp':([0,4,5,7,8,9,10,11,],[3,12,14,15,16,17,18,19,]),}
+_lr_goto_items = {'Z':([0,],[1,]),'GRAMMAR':([0,],[2,]),'LEX':([2,],[3,]),'YACC':([2,],[4,]),'PYTHON':([2,],[5,]),'LEXES':([6,24,35,37,60,61,63,76,],[9,38,48,52,68,70,72,79,]),'YACCS':([7,27,30,40,65,],[14,41,44,55,74,]),'PYTHONS':([8,],[18,]),'LISTFUNCS':([8,20,],[19,34,]),'LISTEXPDEFS':([13,39,64,],[24,53,73,]),'LISTVALUES':([16,28,57,],[27,42,66,]),'LISTGRAM':([17,45,67,],[30,59,75,]),'LISTOTHER':([19,33,],[32,46,]),'LISTTOKENS':([36,],[49,]),'CONTLISTTOKENS':([71,82,],[77,83,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -26,15 +26,43 @@ for _k, _v in _lr_goto_items.items():
        _lr_goto[_x][_k] = _y
 del _lr_goto_items
 _lr_productions = [
-  ("S' -> stat","S'",1,None,None,None),
-  ('stat -> VAR = exp','stat',3,'p_stat_0','yacc.py',11),
-  ('stat -> exp','stat',1,'p_stat_1','yacc.py',14),
-  ('exp -> exp + exp','exp',3,'p_exp_0','yacc.py',17),
-  ('exp -> exp - exp','exp',3,'p_exp_1','yacc.py',20),
-  ('exp -> exp * exp','exp',3,'p_exp_2','yacc.py',23),
-  ('exp -> exp / exp','exp',3,'p_exp_3','yacc.py',26),
-  ('exp -> - exp','exp',2,'p_exp_4','yacc.py',29),
-  ('exp -> ( exp )','exp',3,'p_exp_5','yacc.py',32),
-  ('exp -> NUMBER','exp',1,'p_exp_6','yacc.py',35),
-  ('exp -> VAR','exp',1,'p_exp_7','yacc.py',38),
+  ("S' -> Z","S'",1,None,None,None),
+  ('Z -> GRAMMAR','Z',1,'p_GRAMMATICA','TP2_yacc.py',150),
+  ('GRAMMAR -> GRAMMAR LEX','GRAMMAR',2,'p_GRAMMAR_lex','TP2_yacc.py',164),
+  ('GRAMMAR -> GRAMMAR YACC','GRAMMAR',2,'p_GRAMMAR_yacc','TP2_yacc.py',167),
+  ('GRAMMAR -> GRAMMAR PYTHON','GRAMMAR',2,'p_GRAMMAR_python','TP2_yacc.py',170),
+  ('GRAMMAR -> <empty>','GRAMMAR',0,'p_GRAMMAR_empty','TP2_yacc.py',173),
+  ('LEX -> lex LEXES','LEX',2,'p_LEX','TP2_yacc.py',180),
+  ('LEXES -> literals equal listliterals comment commentEnd LEXES','LEXES',6,'p_LEXES_LITERALSCOM','TP2_yacc.py',186),
+  ('LEXES -> literals equal listliterals LEXES','LEXES',4,'p_LEXES_LITERALS','TP2_yacc.py',191),
+  ('LEXES -> tokens equal oBracket LISTTOKENS cBracket comment commentEnd LEXES','LEXES',8,'p_LEXES_TOKENSCOM','TP2_yacc.py',198),
+  ('LEXES -> tokens equal oBracket LISTTOKENS cBracket LEXES','LEXES',6,'p_LEXES_TOKENS','TP2_yacc.py',203),
+  ('LISTTOKENS -> prime token prime CONTLISTTOKENS','LISTTOKENS',4,'p_LISTTOKENS','TP2_yacc.py',207),
+  ('CONTLISTTOKENS -> comma prime token prime CONTLISTTOKENS','CONTLISTTOKENS',5,'p_CONTLISTTOKENS','TP2_yacc.py',211),
+  ('CONTLISTTOKENS -> <empty>','CONTLISTTOKENS',0,'p_CONTLISTTOKENS_EMPTY','TP2_yacc.py',215),
+  ('LEXES -> ignor equal listignore comment commentEnd LEXES','LEXES',6,'p_LEXES_IGNORECOM','TP2_yacc.py',221),
+  ('LEXES -> ignor equal listignore LEXES','LEXES',4,'p_LEXES_IGNORE','TP2_yacc.py',225),
+  ('LEXES -> er LISTEXPDEFS LEXES','LEXES',3,'p_LEXES_EXPDEFS','TP2_yacc.py',231),
+  ('LISTEXPDEFS -> expReg expDef LISTEXPDEFS','LISTEXPDEFS',3,'p_LEXES_LISTEXPDEFS','TP2_yacc.py',234),
+  ('LISTEXPDEFS -> expReg expDef comment commentEnd LISTEXPDEFS','LISTEXPDEFS',5,'p_LEXES_LISTEXPDEFSCOM','TP2_yacc.py',239),
+  ('LISTEXPDEFS -> <empty>','LISTEXPDEFS',0,'p_LEXES_LISTEXPDEFS_empty','TP2_yacc.py',244),
+  ('LEXES -> <empty>','LEXES',0,'p_LEXES_EMPTY','TP2_yacc.py',251),
+  ('YACC -> yacc YACCS','YACC',2,'p_YACC','TP2_yacc.py',256),
+  ('YACCS -> precedence equal listprecedence YACCS','YACCS',4,'p_YACCS_PREC','TP2_yacc.py',262),
+  ('YACCS -> precedence equal listprecedence comment commentEnd YACCS','YACCS',6,'p_YACCS_PRECCOM','TP2_yacc.py',266),
+  ('YACCS -> initParserVal LISTVALUES YACCS','YACCS',3,'p_YACCS_initParserVal','TP2_yacc.py',272),
+  ('LISTVALUES -> parserVal LISTVALUES','LISTVALUES',2,'p_YACCS_valores','TP2_yacc.py',275),
+  ('LISTVALUES -> parserVal comment commentEnd LISTVALUES','LISTVALUES',4,'p_YACCS_valoresCOM','TP2_yacc.py',279),
+  ('LISTVALUES -> endParserVal','LISTVALUES',1,'p_YACCS_empty','TP2_yacc.py',283),
+  ('YACCS -> grammar LISTGRAM YACCS','YACCS',3,'p_YACCS_GRAMMAR','TP2_yacc.py',288),
+  ('LISTGRAM -> grammarDef funcGrammar comment commentEnd LISTGRAM','LISTGRAM',5,'p_YACCS_LISTGRAMCOM','TP2_yacc.py',291),
+  ('LISTGRAM -> grammarDef funcGrammar LISTGRAM','LISTGRAM',3,'p_YACCS_LISTGRAM','TP2_yacc.py',296),
+  ('LISTGRAM -> <empty>','LISTGRAM',0,'p_YACCS_LISTGRAM_empty','TP2_yacc.py',301),
+  ('YACCS -> <empty>','YACCS',0,'p_YACC_EMPTY','TP2_yacc.py',305),
+  ('PYTHON -> python PYTHONS','PYTHON',2,'p_PYTHON','TP2_yacc.py',310),
+  ('PYTHONS -> LISTFUNCS LISTOTHER','PYTHONS',2,'p_PYTHONS','TP2_yacc.py',313),
+  ('LISTFUNCS -> funcPython LISTFUNCS','LISTFUNCS',2,'p_PYTHON_ListFuncs','TP2_yacc.py',316),
+  ('LISTFUNCS -> <empty>','LISTFUNCS',0,'p_PYTHON_ListFuncsEmpty','TP2_yacc.py',320),
+  ('LISTOTHER -> otherPython LISTOTHER','LISTOTHER',2,'p_PYTHON_ListOther','TP2_yacc.py',323),
+  ('LISTOTHER -> <empty>','LISTOTHER',0,'p_PYTHON_ListOtherEmpty','TP2_yacc.py',327),
 ]
