@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'cBracket colon comma endParserVal equal er expDef expReg funcGrammar grammar grammarDef ignor initParserVal lex listignore listliterals listprecedence literals oBracket parserVal precedence prime python quote token tokens yaccZ : GRAMMARGRAMMAR : GRAMMAR LEXGRAMMAR : GRAMMAR YACCGRAMMAR : GRAMMAR pythonGRAMMAR : LEX : lex LEXES LEXES : literals equal listliterals LEXESLEXES : tokens equal oBracket LISTTOKENS cBracket LEXES LISTTOKENS : prime token prime CONTLISTTOKENSCONTLISTTOKENS : comma prime token prime CONTLISTTOKENS CONTLISTTOKENS : LEXES : ignor equal listignore LEXESLEXES : er LISTEXPDEFS LEXESLISTEXPDEFS : expReg expDef LISTEXPDEFSLISTEXPDEFS : LEXES : YACC : yacc YACCSYACCS : precedence equal listprecedence YACCSYACCS : initParserVal LISTVALUES YACCSLISTVALUES : parserVal LISTVALUESLISTVALUES : endParserValYACCS : grammar LISTGRAM YACCSLISTGRAM : grammarDef funcGrammar LISTGRAMLISTGRAM : YACCS : '
+_lr_signature = "left+-left*/rightUMINUSNUMBER VARstat : VAR '=' exp\tstat : exp\texp : exp '+' exp\texp : exp '-' exp\texp : exp '*' exp\texp : exp '/' exp\texp : '-' exp %prec UMINUS\texp : '(' exp ')' \texp : NUMBER\texp : VAR\t"
     
-_lr_action_items = {'python':([0,2,3,4,5,6,7,8,12,13,16,20,23,25,26,28,30,31,32,33,34,35,36,37,38,41,42,43,44,45,47,],[-5,5,-2,-3,-4,-16,-25,-6,-15,-17,-24,-16,-25,-21,-25,-16,-16,-13,-15,-25,-19,-20,-22,-24,-7,-12,-14,-18,-23,-16,-8,]),'lex':([0,2,3,4,5,6,7,8,12,13,16,20,23,25,26,28,30,31,32,33,34,35,36,37,38,41,42,43,44,45,47,],[-5,6,-2,-3,-4,-16,-25,-6,-15,-17,-24,-16,-25,-21,-25,-16,-16,-13,-15,-25,-19,-20,-22,-24,-7,-12,-14,-18,-23,-16,-8,]),'yacc':([0,2,3,4,5,6,7,8,12,13,16,20,23,25,26,28,30,31,32,33,34,35,36,37,38,41,42,43,44,45,47,],[-5,7,-2,-3,-4,-16,-25,-6,-15,-17,-24,-16,-25,-21,-25,-16,-16,-13,-15,-25,-19,-20,-22,-24,-7,-12,-14,-18,-23,-16,-8,]),'$end':([0,1,2,3,4,5,6,7,8,12,13,16,20,23,25,26,28,30,31,32,33,34,35,36,37,38,41,42,43,44,45,47,],[-5,0,-1,-2,-3,-4,-16,-25,-6,-15,-17,-24,-16,-25,-21,-25,-16,-16,-13,-15,-25,-19,-20,-22,-24,-7,-12,-14,-18,-23,-16,-8,]),'literals':([6,12,20,28,30,32,42,45,],[9,-15,9,9,9,-15,-14,9,]),'tokens':([6,12,20,28,30,32,42,45,],[10,-15,10,10,10,-15,-14,10,]),'ignor':([6,12,20,28,30,32,42,45,],[11,-15,11,11,11,-15,-14,11,]),'er':([6,12,20,28,30,32,42,45,],[12,-15,12,12,12,-15,-14,12,]),'precedence':([7,16,23,25,26,33,35,37,44,],[14,-24,14,-21,14,14,-20,-24,-23,]),'initParserVal':([7,16,23,25,26,33,35,37,44,],[15,-24,15,-21,15,15,-20,-24,-23,]),'grammar':([7,16,23,25,26,33,35,37,44,],[16,-24,16,-21,16,16,-20,-24,-23,]),'equal':([9,10,11,14,],[17,18,19,22,]),'expReg':([12,32,],[21,21,]),'parserVal':([15,24,],[24,24,]),'endParserVal':([15,24,],[25,25,]),'grammarDef':([16,37,],[27,27,]),'listliterals':([17,],[28,]),'oBracket':([18,],[29,]),'listignore':([19,],[30,]),'expDef':([21,],[32,]),'listprecedence':([22,],[33,]),'funcGrammar':([27,],[37,]),'prime':([29,46,50,52,],[40,48,51,53,]),'cBracket':([39,48,49,53,54,],[45,-11,-9,-11,-10,]),'token':([40,51,],[46,52,]),'comma':([48,53,],[50,50,]),}
+_lr_action_items = {'VAR':([0,4,5,7,8,9,10,11,],[2,13,13,13,13,13,13,13,]),'-':([0,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,],[4,-10,9,4,4,-9,4,4,4,4,4,-7,-10,9,9,-3,-4,-5,-6,-8,]),'(':([0,4,5,7,8,9,10,11,],[5,5,5,5,5,5,5,5,]),'NUMBER':([0,4,5,7,8,9,10,11,],[6,6,6,6,6,6,6,6,]),'$end':([1,2,3,6,12,13,15,16,17,18,19,20,],[0,-10,-2,-9,-7,-10,-1,-3,-4,-5,-6,-8,]),'=':([2,],[7,]),'+':([2,3,6,12,13,14,15,16,17,18,19,20,],[-10,8,-9,-7,-10,8,8,-3,-4,-5,-6,-8,]),'*':([2,3,6,12,13,14,15,16,17,18,19,20,],[-10,10,-9,-7,-10,10,10,10,10,-5,-6,-8,]),'/':([2,3,6,12,13,14,15,16,17,18,19,20,],[-10,11,-9,-7,-10,11,11,11,11,-5,-6,-8,]),')':([6,12,13,14,16,17,18,19,20,],[-9,-7,-10,20,-3,-4,-5,-6,-8,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'Z':([0,],[1,]),'GRAMMAR':([0,],[2,]),'LEX':([2,],[3,]),'YACC':([2,],[4,]),'LEXES':([6,20,28,30,45,],[8,31,38,41,47,]),'YACCS':([7,23,26,33,],[13,34,36,43,]),'LISTEXPDEFS':([12,32,],[20,42,]),'LISTVALUES':([15,24,],[23,35,]),'LISTGRAM':([16,37,],[26,44,]),'LISTTOKENS':([29,],[39,]),'CONTLISTTOKENS':([48,53,],[49,54,]),}
+_lr_goto_items = {'stat':([0,],[1,]),'exp':([0,4,5,7,8,9,10,11,],[3,12,14,15,16,17,18,19,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -26,30 +26,15 @@ for _k, _v in _lr_goto_items.items():
        _lr_goto[_x][_k] = _y
 del _lr_goto_items
 _lr_productions = [
-  ("S' -> Z","S'",1,None,None,None),
-  ('Z -> GRAMMAR','Z',1,'p_GRAMMATICA','TP2_yacc.py',95),
-  ('GRAMMAR -> GRAMMAR LEX','GRAMMAR',2,'p_GRAMMAR_lex','TP2_yacc.py',107),
-  ('GRAMMAR -> GRAMMAR YACC','GRAMMAR',2,'p_GRAMMAR_yacc','TP2_yacc.py',110),
-  ('GRAMMAR -> GRAMMAR python','GRAMMAR',2,'p_GRAMMAR_python','TP2_yacc.py',113),
-  ('GRAMMAR -> <empty>','GRAMMAR',0,'p_GRAMMAR_empty','TP2_yacc.py',116),
-  ('LEX -> lex LEXES','LEX',2,'p_LEX','TP2_yacc.py',123),
-  ('LEXES -> literals equal listliterals LEXES','LEXES',4,'p_LEXES_LITERALS','TP2_yacc.py',130),
-  ('LEXES -> tokens equal oBracket LISTTOKENS cBracket LEXES','LEXES',6,'p_LEXES_TOKENS','TP2_yacc.py',136),
-  ('LISTTOKENS -> prime token prime CONTLISTTOKENS','LISTTOKENS',4,'p_LISTTOKENS','TP2_yacc.py',140),
-  ('CONTLISTTOKENS -> comma prime token prime CONTLISTTOKENS','CONTLISTTOKENS',5,'p_CONTLISTTOKENS','TP2_yacc.py',144),
-  ('CONTLISTTOKENS -> <empty>','CONTLISTTOKENS',0,'p_CONTLISTTOKENS_EMPTY','TP2_yacc.py',148),
-  ('LEXES -> ignor equal listignore LEXES','LEXES',4,'p_LEXES_IGNORE','TP2_yacc.py',154),
-  ('LEXES -> er LISTEXPDEFS LEXES','LEXES',3,'p_LEXES_EXPDEFS','TP2_yacc.py',160),
-  ('LISTEXPDEFS -> expReg expDef LISTEXPDEFS','LISTEXPDEFS',3,'p_LEXES_LISTEXPDEFS','TP2_yacc.py',163),
-  ('LISTEXPDEFS -> <empty>','LISTEXPDEFS',0,'p_LEXES_LISTEXPDEFS_empty','TP2_yacc.py',168),
-  ('LEXES -> <empty>','LEXES',0,'p_LEXES_EMPTY','TP2_yacc.py',175),
-  ('YACC -> yacc YACCS','YACC',2,'p_YACC','TP2_yacc.py',180),
-  ('YACCS -> precedence equal listprecedence YACCS','YACCS',4,'p_YACCS_PREC','TP2_yacc.py',187),
-  ('YACCS -> initParserVal LISTVALUES YACCS','YACCS',3,'p_YACCS_initParserVal','TP2_yacc.py',193),
-  ('LISTVALUES -> parserVal LISTVALUES','LISTVALUES',2,'p_YACCS_valores','TP2_yacc.py',196),
-  ('LISTVALUES -> endParserVal','LISTVALUES',1,'p_YACCS_empty','TP2_yacc.py',200),
-  ('YACCS -> grammar LISTGRAM YACCS','YACCS',3,'p_YACCS_GRAMMAR','TP2_yacc.py',204),
-  ('LISTGRAM -> grammarDef funcGrammar LISTGRAM','LISTGRAM',3,'p_YACCS_LISTGRAM','TP2_yacc.py',207),
-  ('LISTGRAM -> <empty>','LISTGRAM',0,'p_YACCS_LISTGRAM_empty','TP2_yacc.py',212),
-  ('YACCS -> <empty>','YACCS',0,'p_YACC_EMPTY','TP2_yacc.py',216),
+  ("S' -> stat","S'",1,None,None,None),
+  ('stat -> VAR = exp','stat',3,'p_stat_0','yacc.py',11),
+  ('stat -> exp','stat',1,'p_stat_1','yacc.py',14),
+  ('exp -> exp + exp','exp',3,'p_exp_0','yacc.py',17),
+  ('exp -> exp - exp','exp',3,'p_exp_1','yacc.py',20),
+  ('exp -> exp * exp','exp',3,'p_exp_2','yacc.py',23),
+  ('exp -> exp / exp','exp',3,'p_exp_3','yacc.py',26),
+  ('exp -> - exp','exp',2,'p_exp_4','yacc.py',29),
+  ('exp -> ( exp )','exp',3,'p_exp_5','yacc.py',32),
+  ('exp -> NUMBER','exp',1,'p_exp_6','yacc.py',35),
+  ('exp -> VAR','exp',1,'p_exp_7','yacc.py',38),
 ]

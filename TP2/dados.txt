@@ -17,7 +17,7 @@
 
 %symboltable
 ts = {}
-a=3
+
 %symboltablend
 %grammar
 stat : VAR '=' exp	{ ts[p[1]] = p[3] }
@@ -26,7 +26,19 @@ exp : exp '+' exp	{ p[0] = p[1] + p[3] }
 exp : exp '-' exp	{ p[0] = p[1] - p[3] }
 exp : exp '*' exp	{ p[0] = p[1] * p[3] }
 exp : exp '/' exp	{ p[0] = p[1] / p[3] }
-exp : '-' exp	{ p[0] = -p[2] }
-exp : '(' exp ')'	{ p[0] = p[2] }
+exp : '-' exp %prec UMINUS	{ p[0] = -p[2] }
+exp : '(' exp ')' 	{ p[0] = p[2] }
 exp : NUMBER	{ p[0] = p[1] }
 exp : VAR	{ p[0] = getval(p[1]) }
+
+%%
+
+def p_error(t):
+	print(f"Syntax error at ’{t.value}’, [{t.lexer.lineno}]")
+
+def getval(n):
+	if n not in ts: print(f"Undefined name ’{n}’")
+	return ts.get(n,0)
+
+y=yacc()
+y.parse("3+4*7")

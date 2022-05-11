@@ -2,7 +2,8 @@ import ply.lex as lex
 
 tokens = ['lex','yacc','python','literals','listliterals','equal','colon','comma',
         'quote','token','tokens','oBracket','cBracket','ignor','listignore','precedence',
-        'listprecedence','prime','er','expReg','expDef','initParserVal','parserVal','endParserVal','grammar','grammarDef','funcGrammar']
+        'listprecedence','prime','er','expReg','expDef','initParserVal','parserVal','endParserVal','grammar','grammarDef','funcGrammar'
+        ,'funcPython','otherPython']
 
 
 states = ( 
@@ -23,7 +24,7 @@ t_TOKENDEF_ignore =  "\t\r\n"
 t_YACC_ignore = " \t\r\n"
 t_GRAMMAR_ignore =  " \t\r\n"
 t_PARSEVALUES_ignore =  " \t\r\n"
-
+t_PYTHON_ignore =  " \r\n"
 #-------------------------------------------LEX----------------------------------------------
 
 def t_ANY_lex(t):
@@ -48,12 +49,10 @@ def t_ANY_python(t):
 
 #-------------------------------------------COMMENT----------------------------------------------
 """
-
 def t_ANY_comment(t):
     r'\#'
     t.lexer.begin("COMMENT")
     return t
-
 def t_COMMENT_end(t):
     r'\#'
     t.lexer.begin("INITIAL")
@@ -154,6 +153,17 @@ def t_GRAMMAR_grammarDef(t):
 
 def t_GRAMMAR_funcGrammar(t):
     r'[^\n]+\n'
+    return t
+
+
+#-------------------------------------------PYTHON----------------------------------------------
+
+def t_PYTHON_funcPython(t):
+    r'[def|\s]+.+'
+    return t
+
+def t_PYTHON_otherPython(t):
+    r'.+'
     return t
 
 #-------------------------------------------OURS_LITERALS----------------------------------------------

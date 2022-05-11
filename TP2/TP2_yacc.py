@@ -99,6 +99,23 @@ def writeValues(initVal):
     for i in range(0,len(initVal)):
         fyacc.write(initVal[i])
 
+
+#-------------------------------------------PYTHONFUNCS----------------------------------------------
+
+def writePythonFuncs(funcs):
+    
+    funcs.reverse()
+
+    for i in range(0,len(funcs)):
+        if re.match(r'def',funcs[i]):
+            fyacc.write("\n\n"+funcs[i])
+        else:
+            fyacc.write(funcs[i])
+
+#-------------------------------------------PYTHONOTHERS----------------------------------------------
+
+def writePythonOther(others):
+    print("a")
 #-------------------------------------------GRAMMAR----------------------------------------------
 
 def p_GRAMMATICA(p):
@@ -111,7 +128,8 @@ def p_GRAMMATICA(p):
     writePrecedence(parser.precedence)
     writeValues(parser.initVal)
     writeGram(parser)
-    
+    writePythonFuncs(parser.pythonFuncs)
+    writePythonOther(parser.pythonOthers)
             
 def p_GRAMMAR_lex(p):
     "GRAMMAR : GRAMMAR LEX"
@@ -120,7 +138,7 @@ def p_GRAMMAR_yacc(p):
     "GRAMMAR : GRAMMAR YACC"
 
 def p_GRAMMAR_python(p):
-    "GRAMMAR : GRAMMAR python"
+    "GRAMMAR : GRAMMAR PYTHON"
 
 def p_GRAMMAR_empty(p):
     "GRAMMAR : "
@@ -139,12 +157,12 @@ def p_LEX(p):
 def p_LEXES_LITERALS(p):
     "LEXES : literals equal listliterals LEXES"
     parser.literals = p[3]
-
+    fyacc.write("from lex import literals\n")
 
 #-------------------------------------------TOKENS----------------------------------------------
 def p_LEXES_TOKENS(p):
     "LEXES : tokens equal oBracket LISTTOKENS cBracket LEXES "
-
+    fyacc.write("from lex import tokens\n")
 
 def p_LISTTOKENS(p):
     "LISTTOKENS : prime token prime CONTLISTTOKENS"
@@ -189,7 +207,6 @@ def p_LEXES_EMPTY(p):
 def p_YACC(p):
     "YACC : yacc YACCS"
     fyacc.write("import ply.yacc as yacc\n")
-    fyacc.write("parser = yacc.yacc()\n")
 
 #-------------------------------------------PRECEDENCE----------------------------------------------
 
@@ -225,6 +242,30 @@ def p_YACCS_LISTGRAM_empty(p):
 def p_YACC_EMPTY(p):
     "YACCS : "
 
+#--------------------------------------------PYTHON-----------------------------------------------
+
+def p_PYTHON(p):
+    "PYTHON : python PYTHONS"
+
+def p_PYTHONS(p):
+    "PYTHONS : LISTFUNCS LISTOTHER"
+    
+def p_PYTHON_ListFuncs(p):
+    "LISTFUNCS : funcPython LISTFUNCS"
+    parser.pythonFuncs.append(p[1])
+
+def p_PYTHON_ListFuncsEmpty(p):
+    "LISTFUNCS : "
+
+def p_PYTHON_ListOther(p):
+    "LISTOTHER : otherPython LISTOTHER"
+    parser.pythonOthers.append(p[1])
+    
+def p_PYTHON_ListOtherEmpty(p):
+    "LISTOTHER : "
+
+
+
 def p_error(p):
     print('Erro sintatico: ', p)
     parser.sucess = False
@@ -240,5 +281,7 @@ parser.precedence = ""
 parser.initVal = []
 parser.expGram = []
 parser.funcGram = []
+parser.pythonFuncs = []
+parser.pythonOthers = []
 
 parser.parse(sys.stdin.read())
