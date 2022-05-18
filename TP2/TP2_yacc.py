@@ -11,12 +11,14 @@ fyacc = open("yacc.py","w")
 #-------------------------------------------LITERALS----------------------------------------------
 
 def writeLiterals(literals):
-    flex.write("\nliterals = "+literals)
+    if literals:
+        flex.write("\nliterals = "+literals)
 
 #-------------------------------------------IGNORE----------------------------------------------
 
 def writeIgnore(ignore):
-    flex.write("\nt_ignore = "+ignore)
+    if ignore:
+        flex.write("\nt_ignore = "+ignore)
 
 #-------------------------------------------TOKENS----------------------------------------------
 
@@ -27,10 +29,14 @@ def tokenNameFunc(expDef):
 
 
 def writeTokens(tokens, comment):
-    flex.write("\ntokens = [\'"+tokens[0]+"\'")
-    for token in tokens[1:]:
-        flex.write(",\'"+token+"\'")
-    flex.write("]\t#"+comment+"\n")
+    if tokens:
+        flex.write("\ntokens = [\'"+tokens[0]+"\'")
+        for token in tokens[1:]:
+            flex.write(",\'"+token+"\'")
+        if comment:
+            flex.write("]\t#"+comment+"\n")
+        else:
+            flex.write("]\n")
 
 #remove os parenteses desnecessário por causa do split
 def removeLastPar(result):
@@ -47,77 +53,85 @@ def removeLastPar(result):
 #-------------------------------------------EXP DEF----------------------------------------------
 
 def writeExpDefs(parser):
-    nrExp = len(parser.expDef)
 
-    parser.expDef.reverse()
-    parser.expReg.reverse()
-    
-    for i in range(0,nrExp):
-        if parser.expReg[i] != '.':
-            resultado = parser.expDef[i].split(",")
-            tokenName = tokenNameFunc(resultado[0])
-            if tokenName in parser.tokens:
-                flex.write("\ndef t_" + tokenName + "(t):")
-                flex.write("\n\tr\'" + parser.expReg[i] + "\'")
-                flex.write("\n\tt.value = " + removeLastPar(resultado[1]))
-                flex.write("\n\treturn t\n") 
-            else:
-                print("Token inválido")    
-        else:
-            flex.write("\ndef t_error(t):")
-            parser.expDef[i] = parser.expDef[i][7:]
-            parser.expDef[i] = parser.expDef[i][:-2]
-            aux = parser.expDef[i].split(";")
-            sizeExp = len(aux[0])
-            while sizeExp > 0:
-                errorPrint = re.match("f\"[^\"]+\"",aux[0])
-                if errorPrint:
-                    size = len(errorPrint.group(0)) + 1
-                    flex.write("\n\tprint("+errorPrint.group(0)+")")
-                    aux[0] = aux[0][size:]
-                    sizeExp -= size
+    if parser.expDef and parser.expReg:
+        nrExp = len(parser.expDef)
+
+        parser.expDef.reverse()
+        parser.expReg.reverse()
+        
+        for i in range(0,nrExp):
+            if parser.expReg[i] != '.':
+                resultado = parser.expDef[i].split(",")
+                tokenName = tokenNameFunc(resultado[0])
+                if tokenName in parser.tokens:
+                    flex.write("\ndef t_" + tokenName + "(t):")
+                    flex.write("\n\tr\'" + parser.expReg[i] + "\'")
+                    flex.write("\n\tt.value = " + removeLastPar(resultado[1]))
+                    flex.write("\n\treturn t\n") 
                 else:
-                    statement = re.search("[^,]+",aux[0])[0]
-                    size = len(statement)  + 1
-                    flex.write("\n\t"+statement)
-                    aux[0] = aux[0][size:]
-                    sizeExp -= size
-            if len(aux) > 1:
-                flex.write(aux[1])
-            flex.write("\n")
+                    print("Token inválido")    
+            else:
+                flex.write("\ndef t_error(t):")
+                
+                parser.expDef[i] = parser.expDef[i][7:]
+                print(parser.expDef[i])
+                aux = parser.expDef[i].split(";")
+                sizeExp = len(aux[0])
+                while sizeExp > 0:
+                    errorPrint = re.match("f\"[^\"]+\"",aux[0])
+                    if errorPrint:
+                        size = len(errorPrint.group(0)) + 1
+                        flex.write("\n\tprint("+errorPrint.group(0)+")")
+                        aux[0] = aux[0][size:]
+                        sizeExp -= size
+                    else:
+                        statement = re.search("[^,]+",aux[0])[0]
+                        size = len(statement)  + 1
+                        flex.write("\n\t"+statement)
+                        aux[0] = aux[0][size:]
+                        sizeExp -= size
+                if len(aux) > 1:
+                    flex.write(aux[1])
+                flex.write("\n")
 
 #-----------------------------------------PRECEDENCE----------------------------------------------
 
 def writePrecedence(precedence):
-    fyacc.write("\nprecedence = "+precedence + "\n")
+    if precedence:
+        fyacc.write("\nprecedence = "+precedence + "\n")
 
 #-------------------------------------------GRAMMARYACC----------------------------------------------
 
 def writeGram(parser):
-    contador = 0
-    expAnt = ""
 
-    parser.expGram.reverse()
-    parser.funcGram.reverse()
 
-    for i in range(0,len(parser.expGram)):
-        div = parser.expGram[i].split(":")
-        if div[0].strip(" ") == expAnt:
-            contador += 1
-        else:
-            contador = 0
-            expAnt = div[0].strip(" ")
-        funFinal = re.sub("[ \{\}]","",parser.funcGram[i])
-        fyacc.write("\ndef p_" + expAnt + "_" + str(contador)+ "(p):\n")
-        fyacc.write("\t\"" + parser.expGram[i] +"\"\n")        
-        fyacc.write("\t" + funFinal +"\n")       
+    if parser.funcGram and parser.expGram:
+        contador = 0
+        expAnt = ""
+
+        parser.expGram.reverse()
+        parser.funcGram.reverse()
+
+        for i in range(0,len(parser.expGram)):
+            div = parser.expGram[i].split(":")
+            if div[0].strip(" ") == expAnt:
+                contador += 1
+            else:
+                contador = 0
+                expAnt = div[0].strip(" ")
+            funFinal = re.sub("[ \{\}]","",parser.funcGram[i])
+            fyacc.write("\ndef p_" + expAnt + "_" + str(contador)+ "(p):\n")
+            fyacc.write("\t\"" + parser.expGram[i] +"\"\n")        
+            fyacc.write("\t" + funFinal +"\n")       
 
 def writeValues(initVal):
 
-    initVal.reverse()
+    if initVal:
+        initVal.reverse()
 
-    for i in range(0,len(initVal)):
-        fyacc.write(initVal[i])
+        for i in range(0,len(initVal)):
+            fyacc.write(initVal[i])
 
 
 #-------------------------------------------PYTHONFUNCS----------------------------------------------
