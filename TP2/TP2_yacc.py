@@ -54,6 +54,18 @@ def removeLastPar(result):
         i = i -1
     return "".join(s)
 
+#no caso de aparecer o error na definição das expressoes regulares no lex ele limpa o array para depois ser tratado
+def removeAux(error):
+    i = 0
+    for i in range(0,len(error)):
+        if error[i] == '(':
+            break
+        i += 1
+    error = error[i+1:] 
+    error = error[:-1]     
+    return error
+
+
 #-------------------------------------------EXP DEF----------------------------------------------
 
 def writeExpDefs(parser):
@@ -77,10 +89,8 @@ def writeExpDefs(parser):
                     print("Token inválido")
             else:
                 flex.write("\ndef t_error(t):")
-
-                parser.expDef[i] = parser.expDef[i][7:]
-                print(parser.expDef[i])
                 aux = parser.expDef[i].split(";")
+                aux[0] = removeAux(aux[0])   # limpa o array que nos temos para trabalhar
                 sizeExp = len(aux[0])
                 while sizeExp > 0:
                     errorPrint = re.match("f\"[^\"]+\"",aux[0])
@@ -91,6 +101,7 @@ def writeExpDefs(parser):
                         sizeExp -= size
                     else:
                         statement = re.search("[^,]+",aux[0])[0]
+                        statement = statement.strip(" ")
                         size = len(statement)  + 1
                         flex.write("\n\t"+statement)
                         aux[0] = aux[0][size:]
