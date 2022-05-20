@@ -82,7 +82,7 @@ def t_LEX_tokens(t):
 
 
 def t_LEX_token(t):
-    r'[a-zA-Z]+'
+    r'[a-zA-Z_]+'
     return t
 
 #-------------------------------------------IGNORE----------------------------------------------
@@ -204,9 +204,8 @@ lexer = lex.lex()
 
 lexer.currentState = 'INITIAL'
 
-""""
+
 import sys
 lexer.input(sys.stdin.read())
 for tok in lexer:
     print(tok)
-"""
