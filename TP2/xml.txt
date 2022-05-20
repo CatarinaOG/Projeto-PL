@@ -1,0 +1,29 @@
+%%LEX
+%literals="><"
+%ignore=" \n\t"
+%tokens=['TAG_NAME','TAG_CLOSE']
+%er
+[a-zA-Z_]+	return('TAG_NAME', t.value);
+/> return('TAG_CLOSE', t.value);
+. error(f"Illegal character '{t.value[0]}' at {t.lexer.lineno}", t.lexer.skip(1));
+
+%%YACC
+
+%symboltable
+%symboltablend
+
+%grammar
+tag : '<' TAG_NAME TAG_CLOSE tag	{ p[0] = [p[2]] + p[4] }
+tag : '<' TAG_NAME '>' tag '<' TAG_NAME TAG_CLOSE tag	{ p[0] = [p[2]] + p[4] + p[8] }
+tag : 	{}
+
+%%
+
+def p_error(t):
+	print(f"Syntax error: '{t.value}' at {t.lexer.lineno}")
+
+
+import sys
+
+y=yacc()
+y.parse(sys.stdin.read())

@@ -1,11 +1,15 @@
+#!/usr/bin/env python
+
+from io import TextIOWrapper
 from posixpath import split
 import ply.yacc as yacc
 import re
 from TP2_lex import tokens
 import sys
+import os
 
-flex = open("lex.py","w")
-fyacc = open("yacc.py","w")
+flex : TextIOWrapper = None
+fyacc : TextIOWrapper = None
 
 
 #-------------------------------------------LITERALS----------------------------------------------
@@ -40,7 +44,7 @@ def writeTokens(tokens, comment):
 
 #remove os parenteses desnecessário por causa do split
 def removeLastPar(result):
-    i = len(result) -1   
+    i = len(result) -1
     s = list(result)
     while i > 0:
         if s[i] == ')':
@@ -48,7 +52,7 @@ def removeLastPar(result):
             s[i+1] = ''
             break
         i = i -1
-    return "".join(s)    
+    return "".join(s)
 
 #-------------------------------------------EXP DEF----------------------------------------------
 
@@ -59,7 +63,7 @@ def writeExpDefs(parser):
 
         parser.expDef.reverse()
         parser.expReg.reverse()
-        
+
         for i in range(0,nrExp):
             if parser.expReg[i] != '.':
                 resultado = parser.expDef[i].split(",")
@@ -68,12 +72,12 @@ def writeExpDefs(parser):
                     flex.write("\ndef t_" + tokenName + "(t):")
                     flex.write("\n\tr\'" + parser.expReg[i] + "\'")
                     flex.write("\n\tt.value = " + removeLastPar(resultado[1]))
-                    flex.write("\n\treturn t\n") 
+                    flex.write("\n\treturn t\n")
                 else:
-                    print("Token inválido")    
+                    print("Token inválido")
             else:
                 flex.write("\ndef t_error(t):")
-                
+
                 parser.expDef[i] = parser.expDef[i][7:]
                 print(parser.expDef[i])
                 aux = parser.expDef[i].split(";")
@@ -122,8 +126,8 @@ def writeGram(parser):
                 expAnt = div[0].strip(" ")
             funFinal = re.sub("[ \{\}]","",parser.funcGram[i])
             fyacc.write("\ndef p_" + expAnt + "_" + str(contador)+ "(p):\n")
-            fyacc.write("\t\"" + parser.expGram[i] +"\"\n")        
-            fyacc.write("\t" + funFinal +"\n")       
+            fyacc.write("\t\"" + parser.expGram[i] +"\"\n")
+            fyacc.write("\t" + funFinal +"\n")
 
 def writeValues(initVal):
 
@@ -137,7 +141,7 @@ def writeValues(initVal):
 #-------------------------------------------PYTHONFUNCS----------------------------------------------
 
 def writePythonFuncs(funcs):
-    
+
     funcs.reverse()
 
     for i in range(0,len(funcs)):
@@ -156,7 +160,7 @@ def writePythonOther(others):
         if re.search(r'yacc\(\)',others[i]):
             fyacc.write(re.sub("yacc\(\)","yacc.yacc()",others[i]))
         else:
-            fyacc.write(others[i])    
+            fyacc.write(others[i])
 
 #-------------------------------------------GRAMMAR----------------------------------------------
 
@@ -165,7 +169,7 @@ def p_GRAMMATICA(p):
 
     writeLiterals(parser.literals)
     writeIgnore(parser.ignore)
-    writeTokens(parser.tokens,parser.commentsToken)    
+    writeTokens(parser.tokens,parser.commentsToken)
     writeExpDefs(parser)
     flex.write("\nlexer = lex.lex()")
     writePrecedence(parser.precedence)
@@ -173,7 +177,7 @@ def p_GRAMMATICA(p):
     writeGram(parser)
     writePythonFuncs(parser.pythonFuncs)
     writePythonOther(parser.pythonOthers)
-            
+
 def p_GRAMMAR_lex(p):
     "GRAMMAR : GRAMMAR LEX"
 
@@ -216,7 +220,7 @@ def p_LEXES_TOKENSCOM(p):
 def p_LEXES_TOKENS(p):
     "LEXES : tokens equal oBracket LISTTOKENS cBracket LEXES "
     fyacc.write("from lex import tokens\n")
-    
+
 def p_LISTTOKENS(p):
     "LISTTOKENS : prime token prime CONTLISTTOKENS"
     parser.tokens.append(p[2])
@@ -227,7 +231,7 @@ def p_CONTLISTTOKENS(p):
 
 def p_CONTLISTTOKENS_EMPTY(p):
     "CONTLISTTOKENS : "
-    
+
 
 #-------------------------------------------IGNORE----------------------------------------------
 
@@ -294,7 +298,7 @@ def p_YACCS_valoresCOM(p):
     parser.initVal.append(p[1] + "\t#" + p[3])
 
 def p_YACCS_empty(p):
-    "LISTVALUES : endParserVal"    
+    "LISTVALUES : endParserVal"
 
 #-------------------------------------------GRAMMAR----------------------------------------------
 
@@ -325,7 +329,7 @@ def p_PYTHON(p):
 
 def p_PYTHONS(p):
     "PYTHONS : LISTFUNCS LISTOTHER"
-    
+
 def p_PYTHON_ListFuncs(p):
     "LISTFUNCS : funcPython LISTFUNCS"
     parser.pythonFuncs.append(p[1])
@@ -336,7 +340,7 @@ def p_PYTHON_ListFuncsEmpty(p):
 def p_PYTHON_ListOther(p):
     "LISTOTHER : otherPython LISTOTHER"
     parser.pythonOthers.append(p[1])
-    
+
 def p_PYTHON_ListOtherEmpty(p):
     "LISTOTHER : "
 
@@ -347,18 +351,43 @@ def p_error(p):
     parser.sucess = False
 
 
-parser = yacc.yacc()
-parser.tokens = []
-parser.commentsToken = ""
-parser.literals = ""
-parser.ignore = ""
-parser.expReg = []
-parser.expDef = []
-parser.precedence = ""
-parser.initVal = []
-parser.expGram = []
-parser.funcGram = []
-parser.pythonFuncs = []
-parser.pythonOthers = []
+parser = None
 
-parser.parse(sys.stdin.read())
+def main():
+
+    global flex
+    global fyacc
+
+    dirName = "out"
+    if not os.path.exists(dirName):
+        os.mkdir(dirName)
+
+    fyacc = open(dirName + "/yacc.py", "w")
+    flex = open(dirName + "/lex.py", "w")
+
+
+    global parser
+    parser = yacc.yacc()
+
+    parser.tokens = []
+    parser.commentsToken = ""
+    parser.literals = ""
+    parser.ignore = ""
+    parser.expReg = []
+    parser.expDef = []
+    parser.precedence = ""
+    parser.initVal = []
+    parser.expGram = []
+    parser.funcGram = []
+    parser.pythonFuncs = []
+    parser.pythonOthers = []
+
+    parser.parse(sys.stdin.read())
+
+    flex.close()
+    fyacc.close()
+
+
+
+if __name__ == '__main__':
+    main()
