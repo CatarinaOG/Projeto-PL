@@ -156,7 +156,7 @@ def t_GRAMMAR_grammarDef(t):
     return t
 
 def t_GRAMMAR_funcGrammar(t):
-    r'{[^}]+}'
+    r'{[^}]*}'
     return t
 
 
@@ -205,7 +205,7 @@ lexer = lex.lex()
 lexer.currentState = 'INITIAL'
 
 
-import sys
-lexer.input(sys.stdin.read())
-for tok in lexer:
-    print(tok)
+#import sys
+#lexer.input(sys.stdin.read())
+#for tok in lexer:
+#    print(tok)
